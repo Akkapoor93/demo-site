@@ -1,0 +1,167 @@
+/* columns-audience: intro text + audience image tiles (values from source computed styles) */
+
+/* mobile: 2x2 grid, intro takes the first cell */
+.columns-audience {
+  padding: 25px 0;
+  color: var(--text-color);
+}
+
+.columns-audience .columns-audience-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.columns-audience .columns-audience-tiles {
+  display: contents;
+}
+
+/* intro */
+.columns-audience .columns-audience-intro {
+  align-self: center;
+  min-width: 0;
+}
+
+.columns-audience .columns-audience-intro h2 {
+  margin: 0;
+  color: var(--heading-color);
+  font-family: var(--heading-font-family);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.columns-audience .columns-audience-intro p {
+  margin: 0 0 16px;
+  color: rgb(137 137 137);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* tiles */
+.columns-audience .columns-audience-tile {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.columns-audience .columns-audience-tile::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to top, rgb(0 0 0 / 35%), rgb(0 0 0 / 0%));
+  pointer-events: none;
+}
+
+.columns-audience .columns-audience-tile-image,
+.columns-audience .columns-audience-tile-image picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+  line-height: 0;
+}
+
+.columns-audience .columns-audience-tile-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.columns-audience .columns-audience-tile-content {
+  position: absolute;
+  right: 6px;
+  bottom: 0;
+  left: 10px;
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+}
+
+.columns-audience .columns-audience-tile-content > * {
+  margin: 0;
+}
+
+.columns-audience .columns-audience-tile-content > p:first-child {
+  margin: 0 0 5px;
+  font-family: var(--heading-font-family);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 27px;
+}
+
+.columns-audience .columns-audience-tile-content a:any-link {
+  color: #fff;
+  font-family: var(--body-font-family);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  text-decoration: underline;
+}
+
+/* stretched link covers the whole tile */
+.columns-audience .columns-audience-tile-linked .columns-audience-tile-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+@media (width >= 900px) {
+  .columns-audience {
+    padding: 40px 0;
+  }
+
+  .columns-audience .columns-audience-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .columns-audience .columns-audience-intro {
+    flex: 1 1 0%;
+    max-width: 258px;
+  }
+
+  .columns-audience .columns-audience-intro h2 {
+    color: var(--brand-color);
+    font-size: 30px;
+    line-height: 40px;
+  }
+
+  .columns-audience .columns-audience-intro p {
+    color: rgb(0 0 0 / 80%);
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .columns-audience .columns-audience-tiles {
+    display: flex;
+    flex: 2 1 0%;
+    flex-wrap: wrap;
+    gap: 20px;
+    min-width: 0;
+  }
+
+  .columns-audience .columns-audience-tile {
+    flex: 1 1 calc(33% - 20px);
+    max-width: 300px;
+  }
+
+  .columns-audience .columns-audience-tile-content {
+    right: 20px;
+  }
+
+  .columns-audience .columns-audience-tile-content > p:first-child {
+    font-size: 28px;
+    line-height: 42px;
+  }
+
+  .columns-audience .columns-audience-tile-content a:any-link {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}

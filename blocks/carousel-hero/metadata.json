@@ -1,0 +1,20 @@
+{
+  "variantName": "carousel-hero",
+  "baseBlock": "carousel",
+  "canonicalModel": "standalone",
+  "visualCharacteristics": {
+    "colorScheme": "none",
+    "density": "minimal",
+    "purpose": "promo-banner-slider",
+    "imagePattern": "full-bleed",
+    "structure": "image + link"
+  },
+  "contentPattern": "One row per slide: cell 1 = picture (desktop image; mobile rendition as second picture in same cell), cell 2 = link to slide target (image alt used as link text).",
+  "options": [],
+  "memberVariantIds": ["carousel-hero"],
+  "usage": {
+    "pagesUsing": ["https://www.tanishq.com/homepage"],
+    "reuseCount": 1,
+    "lastUsed": "2026-09-26"
+  }
+}

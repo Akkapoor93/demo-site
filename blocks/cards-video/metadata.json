@@ -1,0 +1,20 @@
+{
+  "variantName": "cards-video",
+  "baseBlock": "cards",
+  "canonicalModel": "standalone",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "minimal",
+    "purpose": "testimonial-videos",
+    "imagePattern": "video",
+    "structure": "video link"
+  },
+  "contentPattern": "One row per video: cell 1 = poster image (optional), cell 2 = link to .mp4.",
+  "options": [],
+  "memberVariantIds": ["cards-video"],
+  "usage": {
+    "pagesUsing": ["https://www.tanishq.com/homepage"],
+    "reuseCount": 1,
+    "lastUsed": "2026-09-26"
+  }
+}

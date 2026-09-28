@@ -1,0 +1,12 @@
+{
+  "sites": {
+    "demo-site": {
+      "previewOrg": "akkapoor93",
+      "previewSite": "demo-site",
+      "contentHostUrl": "https://content.da.live/akkapoor93/demo-site/",
+      "botProtected": true,
+      "libraryUrl": "https://main--sta-boilerplate--aemdemos.aem.page/tools/sidekick/library.json"
+    }
+  },
+  "type": "da"
+}

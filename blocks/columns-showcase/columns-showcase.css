@@ -1,0 +1,199 @@
+/* columns-showcase: poster + product grid ("For The Little Ones")
+   values from source computed styles (.party-edit .party-edit-content) */
+
+.columns-showcase {
+  padding: 20px 0 0;
+  color: var(--text-color);
+}
+
+.columns-showcase > div {
+  display: flex;
+  flex-direction: column;
+}
+
+/* poster: mobile flattens it so the CTA can sit below the product carousel */
+.columns-showcase .columns-showcase-poster {
+  display: contents;
+}
+
+.columns-showcase .columns-showcase-poster-image {
+  display: block;
+  order: 0;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.columns-showcase .columns-showcase-poster-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.columns-showcase .columns-showcase-poster-content {
+  order: 2;
+  margin: 10px 0 0;
+  text-align: center;
+}
+
+.columns-showcase .columns-showcase-poster-content > * {
+  margin: 0;
+}
+
+.columns-showcase .columns-showcase-poster-content a:any-link {
+  color: var(--brand-color);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 24px;
+  text-decoration: underline;
+}
+
+/* products: mobile carousel overlapping the poster */
+.columns-showcase .columns-showcase-products {
+  position: relative;
+  z-index: 1;
+  order: 1;
+  min-width: 0;
+  margin-top: -25%;
+}
+
+.columns-showcase .columns-showcase-product-list {
+  display: flex;
+  margin: 0;
+  padding: 0 calc((100% - 219px) / 2);
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.columns-showcase .columns-showcase-product-list::-webkit-scrollbar {
+  display: none;
+}
+
+.columns-showcase .columns-showcase-product {
+  flex: 0 0 219px;
+  min-width: 0;
+  padding: 20px 0 0;
+  scroll-snap-align: center;
+  transform: scale(0.85);
+}
+
+.columns-showcase .columns-showcase-product > * {
+  margin: 0 6px;
+}
+
+.columns-showcase .columns-showcase-product-image {
+  display: block;
+  border-radius: 4px;
+  box-shadow: 0 0 8px 0 rgb(0 0 0 / 8%);
+  overflow: hidden;
+  line-height: 0;
+}
+
+.columns-showcase .columns-showcase-product-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.columns-showcase .columns-showcase-product p {
+  margin-bottom: 20px;
+  padding: 5px 0;
+}
+
+.columns-showcase .columns-showcase-product p a:any-link {
+  color: rgb(68 68 68);
+  font-family: var(--heading-font-family);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  text-decoration: none;
+}
+
+/* the centred carousel item is enlarged, its neighbours shrunk (source scales 0.85 / 1.15) */
+@keyframes columns-showcase-focus {
+  0%,
+  30%,
+  70%,
+  100% {
+    transform: scale(0.85);
+  }
+
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .columns-showcase .columns-showcase-product {
+    animation: columns-showcase-focus linear both;
+    animation-timeline: view(inline);
+  }
+}
+
+@media (width >= 900px) {
+  .columns-showcase {
+    padding-top: 24px;
+  }
+
+  .columns-showcase > div {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 37px;
+  }
+
+  .columns-showcase .columns-showcase-poster {
+    display: block;
+    position: relative;
+    flex: 0 0 40%;
+    padding: 0 8px;
+  }
+
+  .columns-showcase .columns-showcase-poster-image {
+    margin-bottom: 0;
+  }
+
+  .columns-showcase .columns-showcase-poster-content {
+    position: absolute;
+    bottom: 30px;
+    left: 33px;
+    margin: 0;
+    text-align: left;
+  }
+
+  .columns-showcase .columns-showcase-poster-content a:any-link {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .columns-showcase .columns-showcase-products {
+    flex: 0 1 54%;
+    margin-top: 0;
+  }
+
+  .columns-showcase .columns-showcase-product-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .columns-showcase .columns-showcase-product {
+    padding: 10px 15px 0 10px;
+    transform: none;
+    animation: none;
+  }
+
+  .columns-showcase .columns-showcase-product > *,
+  .columns-showcase .columns-showcase-product p {
+    margin: 0;
+  }
+}

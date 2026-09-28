@@ -1,0 +1,20 @@
+{
+  "variantName": "columns-spotlight",
+  "baseBlock": "columns",
+  "canonicalModel": "standalone",
+  "visualCharacteristics": {
+    "colorScheme": "light-gradient",
+    "density": "medium",
+    "purpose": "collection-spotlight",
+    "imagePattern": "video + product thumbs",
+    "structure": "video + heading + cta | heading + subtitle + cta + product list"
+  },
+  "contentPattern": "One row, 2 cells: cell 1 = video link (Everyday-essentialcom.mp4) + H2 'Effortless Essentials' + 'Explore' link; cell 2 = H3 heading, subtitle paragraph, 'Explore' link, then per product: image + linked name.",
+  "options": [],
+  "memberVariantIds": ["columns-spotlight"],
+  "usage": {
+    "pagesUsing": ["https://www.tanishq.com/homepage"],
+    "reuseCount": 1,
+    "lastUsed": "2026-09-26"
+  }
+}

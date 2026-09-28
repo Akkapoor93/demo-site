@@ -1,0 +1,213 @@
+/* cards-store: "Our Boutiques" store slider (values from source computed styles) */
+.cards-store {
+  color: var(--text-color);
+}
+
+.cards-store .cards-store-viewport {
+  position: relative;
+  margin: 0 44px;
+}
+
+.cards-store .cards-store-track {
+  display: grid;
+  grid-auto-columns: 100%;
+  grid-auto-flow: column;
+  gap: 11px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.cards-store .cards-store-track::-webkit-scrollbar {
+  display: none;
+}
+
+.cards-store .cards-store-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+/* image */
+.cards-store .cards-store-card-image {
+  line-height: 0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.cards-store .cards-store-card-image img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* body */
+.cards-store .cards-store-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0 0;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.cards-store .cards-store-card-body > * {
+  margin: 0;
+}
+
+.cards-store .cards-store-card-body h3 {
+  font-family: var(--heading-font-family);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 40px;
+  color: var(--brand-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cards-store h3 a:any-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cards-store h3 a:hover {
+  color: var(--link-hover-color);
+}
+
+.cards-store .cards-store-card-body .cards-store-address {
+  min-height: 55px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  color: rgb(0 0 0 / 54%);
+}
+
+.cards-store .cards-store-card-body .cards-store-phone {
+  min-height: 40px;
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: rgb(0 0 0 / 54%);
+}
+
+.cards-store .cards-store-phone a:any-link {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  color: rgb(68 68 68);
+  text-decoration: underline;
+}
+
+.cards-store .cards-store-card-body .cards-store-directions {
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+}
+
+.cards-store .cards-store-directions a:any-link {
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 16px;
+  color: rgb(0 0 0 / 54%);
+  text-decoration: underline;
+}
+
+.cards-store .cards-store-phone a:hover,
+.cards-store .cards-store-directions a:hover {
+  color: var(--link-hover-color);
+}
+
+/* arrows */
+.cards-store .cards-store-prev,
+.cards-store .cards-store-next {
+  position: absolute;
+  top: 110px;
+  z-index: 1;
+  width: 42px;
+  height: 42px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: url('arrow-prev.svg') center / 42px 42px no-repeat;
+  cursor: pointer;
+}
+
+.cards-store .cards-store-prev {
+  left: -44px;
+}
+
+.cards-store .cards-store-next {
+  right: -44px;
+  background-image: url('arrow-next.svg');
+}
+
+.cards-store .cards-store-prev:disabled,
+.cards-store .cards-store-next:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.cards-store .cards-store-prev:focus-visible {
+  background-image: url('arrow-prev-hover.svg');
+}
+
+.cards-store .cards-store-next:focus-visible {
+  background-image: url('arrow-next-hover.svg');
+}
+
+.cards-store .cards-store-prev:hover:not(:disabled) {
+  background-image: url('arrow-prev-hover.svg');
+}
+
+.cards-store .cards-store-next:hover:not(:disabled) {
+  background-image: url('arrow-next-hover.svg');
+}
+
+@media (width >= 600px) {
+  .cards-store .cards-store-track {
+    grid-auto-columns: calc((100% - 20px) / 2);
+    gap: 20px;
+  }
+}
+
+@media (width >= 900px) {
+  .cards-store .cards-store-viewport {
+    margin: 0 52px;
+  }
+
+  .cards-store .cards-store-track {
+    grid-auto-columns: calc((100% - 40px) / 3);
+  }
+
+  .cards-store .cards-store-prev {
+    left: -52px;
+  }
+
+  .cards-store .cards-store-next {
+    right: -52px;
+  }
+}
+
+@media (width >= 1300px) {
+  .cards-store .cards-store-viewport {
+    max-width: 1087px;
+    margin: 0 auto;
+  }
+
+  .cards-store .cards-store-prev {
+    left: -100px;
+  }
+
+  .cards-store .cards-store-next {
+    right: -100px;
+  }
+}

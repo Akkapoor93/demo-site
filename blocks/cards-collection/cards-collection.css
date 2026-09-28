@@ -1,0 +1,91 @@
+/* tiles: stacked on mobile (80% wide), three equal squares on desktop */
+.cards-collection {
+  color: var(--text-color);
+  margin: 0 0 30px;
+}
+
+.cards-collection > ul {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cards-collection .cards-collection-card {
+  position: relative;
+  flex: 0 0 auto;
+  width: 80%;
+  min-width: 0;
+}
+
+.cards-collection .cards-collection-card-image {
+  line-height: 0;
+}
+
+.cards-collection .cards-collection-card-image a {
+  display: block;
+}
+
+.cards-collection .cards-collection-card-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+/* the collection title/description is baked into the artwork on the source
+   (.tile-content.d-none) -- keep it for assistive tech, hide it visually */
+.cards-collection .cards-collection-card-image + .cards-collection-card-body {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* text-only tiles (no image) show their text */
+.cards-collection .cards-collection-card-text .cards-collection-card-body h3 {
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--text-color);
+}
+
+.cards-collection .cards-collection-card-text .cards-collection-card-body p {
+  font-size: 16px;
+  line-height: 24px;
+  margin: 0 0 16px;
+}
+
+.cards-collection .cards-collection-card-body > :first-child {
+  margin-top: 0;
+}
+
+.cards-collection .cards-collection-card-body > :last-child {
+  margin-bottom: 0;
+}
+
+/* the visually hidden title link still receives focus: show it on the tile */
+.cards-collection .cards-collection-card-linked:focus-within {
+  outline: 2px solid var(--link-color);
+  outline-offset: 2px;
+}
+
+@media (width >= 900px) {
+  .cards-collection > ul {
+    flex-flow: row nowrap;
+    justify-content: space-between;
+  }
+
+  .cards-collection .cards-collection-card {
+    flex: 1 1 0%;
+    width: auto;
+  }
+}

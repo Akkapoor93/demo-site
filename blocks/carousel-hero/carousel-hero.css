@@ -1,0 +1,147 @@
+/* full-bleed hero: escape the section content max-width (source: container-fluid, 5px gutter) */
+main > .section > .carousel-hero-wrapper {
+  max-width: none;
+  padding: 0 5px;
+}
+
+.carousel-hero {
+  position: relative;
+  margin-top: 40px;
+  color: var(--text-color);
+}
+
+.carousel-hero .carousel-hero-slides-container {
+  position: relative;
+}
+
+.carousel-hero .carousel-hero-slides,
+.carousel-hero .carousel-hero-indicators {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.carousel-hero .carousel-hero-slides {
+  display: flex;
+  overflow: scroll clip;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.carousel-hero .carousel-hero-slides::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-hero .carousel-hero-slide {
+  position: relative;
+  flex: 0 0 100%;
+  width: 100%;
+  padding: 0 0 8px;
+  box-sizing: border-box;
+  scroll-snap-align: start;
+}
+
+.carousel-hero .carousel-hero-slide-link {
+  display: block;
+  color: rgb(33 33 33);
+  text-decoration: none;
+}
+
+.carousel-hero .carousel-hero-slide-media {
+  margin: 12px 12px 16px;
+  line-height: 0;
+}
+
+.carousel-hero .carousel-hero-slide-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+/* desktop/mobile renditions: mobile first */
+.carousel-hero .carousel-hero-desktop {
+  display: none;
+}
+
+.carousel-hero .carousel-hero-slide-content {
+  position: absolute;
+  inset: auto 12px 24px;
+  padding: 16px;
+}
+
+/* indicator dashes */
+.carousel-hero .carousel-hero-indicators {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  height: 10px;
+}
+
+.carousel-hero .carousel-hero-indicator {
+  margin: 0 4px;
+}
+
+.carousel-hero .carousel-hero-indicator button {
+  display: block;
+  width: 15px;
+  height: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.carousel-hero .carousel-hero-indicator button::before {
+  content: '';
+  display: block;
+  height: 3px;
+  border-radius: 10px;
+  background-color: rgb(204 204 204);
+  opacity: 0.5;
+}
+
+.carousel-hero .carousel-hero-indicator button:disabled {
+  cursor: default;
+}
+
+.carousel-hero .carousel-hero-indicator button:disabled::before {
+  background-color: var(--brand-color);
+  opacity: 1;
+}
+
+@media (width >= 600px) {
+  .carousel-hero .carousel-hero-desktop {
+    display: block;
+  }
+
+  .carousel-hero .carousel-hero-mobile {
+    display: none;
+  }
+
+  /* source renders the 3:1 desktop art stretched to 1391x540 */
+  .carousel-hero .carousel-hero-desktop img {
+    aspect-ratio: 1391 / 540;
+    object-fit: fill;
+  }
+}
+
+@media (width >= 900px) {
+  .carousel-hero {
+    margin-top: 20px;
+  }
+
+  .carousel-hero .carousel-hero-slide-media {
+    margin: 0 12px 16px;
+  }
+
+  .carousel-hero .carousel-hero-indicator button:disabled {
+    width: 36px;
+  }
+}

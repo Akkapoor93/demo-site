@@ -1,0 +1,24 @@
+/* Kapoor Jewellers brand tokens (design derived from the reference homepage) */
+:root {
+  /* fonts (Fontshare, loaded in fonts.css) */
+  --heading-font-family: gambetta, gambetta-fallback, serif;
+  --body-font-family: satoshi, satoshi-fallback, sans-serif;
+
+  /* colors */
+  --background-color: #fff;
+  --text-color: #222;
+  --heading-color: #383838;
+  --subtitle-color: #404040;
+  --brand-color: #832729;
+  --brand-dark-color: #54090a;
+  --rose-gold-color: #c49d8e;
+  --blush-color: #f5eeee;
+  --cream-color: #f8f3e8;
+  --link-color: #832729;
+  --link-hover-color: #54090a;
+
+  /* spacing */
+  --section-padding: 60px;
+  --content-max-width: 1200px;
+  --nav-height: 164px;
+}
