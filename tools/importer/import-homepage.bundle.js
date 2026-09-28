@@ -857,8 +857,6 @@ var CustomImportScript = (() => {
     { city: "Chicago", path: "/stores/chicago", address: "200 Placeholder Street, Chicago, Illinois 60601", phone: "(312) 555-0102", tel: "+13125550102" },
     { city: "Dallas", path: "/stores/dallas", address: "300 Example Road, Dallas, Texas 75201", phone: "(214) 555-0103", tel: "+12145550103" }
   ];
-  var BUILT_PAGES = ["/", "/index", "/coming-soon"];
-  var comingSoon = (target) => BUILT_PAGES.includes(target.split(/[?#]/)[0]) ? target : `/coming-soon?from=${encodeURIComponent(target)}`;
   var COLLECTION_NAMES = ["Signature Collection", "Gemstone Collection", "Festive Gold Collection"];
   function rebrandText(text) {
     return text.replace(/Tanishq(?=\s+\d+\s*KT)/gi, "Kapoor").replace(/Tanishq/gi, BRAND);
@@ -914,7 +912,7 @@ var CustomImportScript = (() => {
       const body = document2.createElement("td");
       const h3 = document2.createElement("h3");
       const link = document2.createElement("a");
-      link.href = comingSoon(store.path);
+      link.href = store.path;
       link.textContent = name;
       h3.append(link);
       const address = document2.createElement("p");
@@ -926,7 +924,7 @@ var CustomImportScript = (() => {
       phone.append(tel);
       const directions = document2.createElement("p");
       const dir = document2.createElement("a");
-      dir.href = comingSoon(store.path);
+      dir.href = store.path;
       dir.textContent = "Get Directions";
       directions.append(dir);
       body.append(h3, address, phone, directions);
@@ -1013,9 +1011,9 @@ var CustomImportScript = (() => {
         ["lang", "utm_source", "utm_medium", "utm_campaign"].forEach((p) => url.searchParams.delete(p));
         const search = url.searchParams.toString();
         const pathname = (url.pathname || "/").replace(/about-tanishq/gi, "about-kapoor-jewellers").replace(/encircle/gi, "kapoor-rewards").replace(/tanishq/gi, "kapoor").replace(/\.html$/, "");
-        a.setAttribute("href", comingSoon(`${pathname}${search ? `?${search}` : ""}${url.hash}`));
+        a.setAttribute("href", `${pathname}${search ? `?${search}` : ""}${url.hash}`);
       } else if (/(^|\.)(goo\.gl|google\.[a-z.]+)$/i.test(url.hostname) && /maps/i.test(href)) {
-        a.setAttribute("href", comingSoon("/stores"));
+        a.setAttribute("href", "/stores");
       }
     });
   }
