@@ -22,6 +22,7 @@ const LINK_OVERRIDES = {
   'Your California Privacy Choices': '/privacy/california-privacy-choices',
 };
 
+
 const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const rebrand = (s) => RENAMES.reduce((acc, [re, to]) => acc.replace(re, to), String(s || ''));
 
@@ -66,7 +67,7 @@ model.cols.forEach((col) => {
       lines.push(`<li><a href="mailto:${SAMPLE_EMAIL}">${SAMPLE_EMAIL}</a></li>`);
     } else if (l.aria) {
       const file = `social-${l.aria.toLowerCase()}.svg`;
-      lines.push(`<li><a href="#"><img src="images/footer/${file}" alt="${esc(l.aria)}"></a></li>`);
+      lines.push(`<li><a href="#"><img src="/media-da/footer-${file.replace('.svg', '.png')}" alt="${esc(l.aria)}"></a></li>`);
     } else {
       const text = rebrand(l.text);
       lines.push(`<li><a href="${rel(l.href, isCountries ? l.text : null)}">${esc(text)}</a></li>`);
@@ -79,7 +80,7 @@ lines.push('<div>', '<ul>');
 model.legal.forEach((l) => {
   const text = rebrand(l.text);
   const href = LINK_OVERRIDES[l.text] || rel(l.href);
-  const icon = l.img ? '<img src="images/footer/privacy-choices.svg" alt="">' : '';
+  const icon = l.img ? '<img src="/media-da/footer-privacy-choices.png" alt="">' : '';
   lines.push(`<li><a href="${href}">${icon}${esc(text)}</a></li>`);
 });
 lines.push('</ul>', `<p>${esc(COPYRIGHT)}</p>`, '</div>');

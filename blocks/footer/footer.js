@@ -77,7 +77,9 @@ export default async function decorate(block) {
   if (!fragment) return;
   const frag = document.createElement('div');
   frag.innerHTML = fragment.html;
-  // fragment image paths are relative to the fragment, not the page
+  // fragment image paths are relative to the fragment, not the page; drop <source>s so
+  // their relative srcsets don't resolve against the page URL
+  frag.querySelectorAll('picture source').forEach((source) => source.remove());
   frag.querySelectorAll('img[src]').forEach((img) => {
     img.src = new URL(img.getAttribute('src'), fragment.base).href;
     img.loading = 'lazy';

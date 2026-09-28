@@ -31,6 +31,7 @@ const SAMPLE_STORES = [
   { city: 'Dallas', path: '/stores/dallas', address: '300 Example Road, Dallas, Texas 75201', phone: '(214) 555-0103', tel: '+12145550103' },
 ];
 
+
 const COLLECTION_NAMES = ['Signature Collection', 'Gemstone Collection', 'Festive Gold Collection'];
 
 function rebrandText(text) {
@@ -196,7 +197,7 @@ function rebrandLinks(element) {
     }
     if (!/^https?:$/.test(url.protocol)) return;
     if (TANISHQ_HOST.test(url.hostname)) {
-      url.searchParams.delete('lang');
+      ['lang', 'utm_source', 'utm_medium', 'utm_campaign'].forEach((p) => url.searchParams.delete(p));
       const search = url.searchParams.toString();
       const pathname = (url.pathname || '/').replace(/about-tanishq/gi, 'about-kapoor-jewellers').replace(/encircle/gi, 'kapoor-rewards').replace(/tanishq/gi, 'kapoor').replace(/\.html$/, '');
       a.setAttribute('href', `${pathname}${search ? `?${search}` : ''}${url.hash}`);

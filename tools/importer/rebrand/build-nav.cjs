@@ -4,12 +4,16 @@
 // - writes simple line-icon SVGs for the header tools
 // - rebrands text and rewrites links to site-relative paths
 // Flat DA-safe markup: top-level section <div>s only, no classes/ids/data/style, no forms.
+// Images are referenced from /media-da/ (the folder the DA publish flow uploads); SVG icons
+// are used as PNG copies (see icons-to-png.cjs). Tab layout is authored as label formatting:
+// **bold** = large image cards, *italic* = icon + text, plain = image cards / text links.
 // Run from the project root: node tools/importer/rebrand/build-nav.cjs
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
 const MODEL = 'migration-work/navigation-validation/source-nav-model.json';
+const MEDIA_DIR = 'content/media-da';
 const IMG_DIR = 'content/images/nav';
 const OUT = 'content/nav.plain.html';
 const BRAND = 'Kapoor Jewellers';
@@ -31,6 +35,7 @@ const TYPE_BY_STYLE = {
   'icon-with-text': 'icon',
   'title-only': 'chip',
 };
+
 
 const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const slug = (s) => String(s || 'item').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'item';
@@ -104,7 +109,7 @@ const TOOL_ICONS = {
   const lines = [];
   const imgTag = (src, type, label, alt) => {
     const name = localName(src, type, label);
-    return `<img src="images/nav/${name}" alt="${esc(alt)}">`;
+    return `<img src="/media-da/nav-${name}" alt="${esc(alt)}">`;
   };
 
   // 1. announcement bar
@@ -123,7 +128,7 @@ const TOOL_ICONS = {
     ['/cart', 'tool-cart.svg', 'Cart'],
   ];
   lines.push('<div>', '<ul>');
-  tools.forEach(([href, icon, label]) => lines.push(`<li><a href="${href}"><img src="images/nav/${icon}" alt="${label}">${label}</a></li>`));
+  tools.forEach(([href, icon, label]) => lines.push(`<li><a href="${href}"><img src="/media-da/nav-${icon.replace('.svg', '.png')}" alt="${label}">${label}</a></li>`));
   lines.push('</ul>', '</div>');
 
   // 4. main navigation with megamenus (heading is shown above the mobile category grid)
@@ -139,7 +144,10 @@ const TOOL_ICONS = {
     t.tabs.forEach((tab) => {
       const type = TYPE_BY_STYLE[tab.style] || 'chip';
       const tabLabel = rebrand(tab.label);
-      lines.push(`<li><a href="${rel(tab.href)}">${esc(tabLabel)}</a>`);
+      const tabLink = `<a href="${rel(tab.href)}">${esc(tabLabel)}</a>`;
+      const LABEL_FORMAT = { big: ['<strong>', '</strong>'], icon: ['<em>', '</em>'] };
+      const [open, close] = LABEL_FORMAT[type] || ['', ''];
+      lines.push(`<li>${open}${tabLink}${close}`);
       if (tab.items.length) {
         lines.push('<ul>');
         tab.items.forEach((item) => {
@@ -171,6 +179,11 @@ const TOOL_ICONS = {
   for (const [src, name] of downloads) {
     // eslint-disable-next-line no-await-in-loop
     if (await download(src, name)) ok += 1; else failed.push(src);
+  }
+  // publishable copies under /media-da/ (DA uploads this folder with the document)
+  for (const name of downloads.values()) {
+    const src = path.join(IMG_DIR, name);
+    if (fs.existsSync(src)) fs.copyFileSync(src, path.join(MEDIA_DIR, `nav-${name}`));
   }
   fs.writeFileSync(OUT, `${lines.join('\n')}\n`);
   console.log(`nav written: ${OUT}; images ${ok}/${downloads.size} downloaded${failed.length ? `; FAILED: ${failed.join(', ')}` : ''}`);

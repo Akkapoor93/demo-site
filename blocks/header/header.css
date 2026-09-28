@@ -88,8 +88,23 @@ header .nav-tools {
   gap: 14px;
 }
 
+/* icon links: 40px hit area with a hover/focus state so they read as links */
 header .nav-tools a:any-link {
   display: flex;
+  margin: -8px;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+header .nav-tools a:hover,
+header .nav-tools a:focus-visible {
+  background-color: rgb(131 39 41 / 10%);
+}
+
+header .nav-tools a:focus-visible {
+  outline: 2px solid var(--brand-color);
+  outline-offset: 0;
 }
 
 header .nav-tools img {

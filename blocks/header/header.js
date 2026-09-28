@@ -34,21 +34,50 @@ async function fetchNav() {
   return { html: await resp.text(), base: new URL(resp.url, window.location.href) };
 }
 
-// Item layout comes from the image naming convention in the fragment (card-/big-/icon-).
-function itemType(li) {
-  const img = li.querySelector('img');
-  if (!img) return 'chip';
-  const name = img.getAttribute('src').split('/').pop();
-  const match = name.match(/^(card|big|icon)-/);
-  return match ? match[1] : 'card';
+/**
+ * The label of a list item is its first non-list child. Authoring tools may wrap the link
+ * in a paragraph and/or bold/italic (`<li><p><strong><a>…`), so look inside it.
+ * @param {Element} li List item
+ */
+function labelOf(li) {
+  const node = li.firstElementChild;
+  if (!node || node.tagName === 'UL') return { node: null, link: null };
+  return { node, link: node.tagName === 'A' ? node : node.querySelector('a') };
 }
 
+// Tab layout is authored as label formatting: bold = large cards, italic = icon + text.
+function tabType(label, items) {
+  if (!items.some((item) => item.querySelector('img'))) return 'chip';
+  if (label.node && (label.node.matches('strong, b') || label.node.querySelector('strong, b'))) return 'big';
+  if (label.node && (label.node.matches('em, i') || label.node.querySelector('em, i'))) return 'icon';
+  return 'card';
+}
+
+/**
+ * Visible label for a link. Publishing splits "image + text" links into
+ * `<li><p><a><picture></a></p><p>Text</p></li>`, so fall back to the list item's own text
+ * (excluding nested lists), then to the image alt.
+ * @param {Element} anchor The link
+ */
 function textOf(anchor) {
-  return [...anchor.childNodes]
-    .filter((n) => n.nodeType === Node.TEXT_NODE)
-    .map((n) => n.textContent)
-    .join('')
-    .trim() || anchor.textContent.trim();
+  const own = anchor.textContent.trim();
+  if (own) return own;
+  const li = anchor.closest('li');
+  if (li) {
+    const text = [...li.children]
+      .filter((child) => child.tagName !== 'UL' && !child.contains(anchor))
+      .map((child) => child.textContent.trim())
+      .filter(Boolean)
+      .join(' ');
+    if (text) return text;
+  }
+  const img = anchor.querySelector('img');
+  return img ? img.alt : '';
+}
+
+// The link of a list item, wherever the authoring pipeline placed it.
+function linkOf(li) {
+  return li.querySelector(':scope > a, :scope > p a, :scope > strong a, :scope > em a');
 }
 
 /**
@@ -72,11 +101,12 @@ function readSections(frag) {
  * @param {Element} li Top-level nav item from the fragment
  */
 function readItem(li) {
-  const link = li.querySelector(':scope > a');
+  const { link } = labelOf(li);
   const tabs = [...li.querySelectorAll(':scope > ul > li')].map((tab) => {
-    const tabLink = tab.querySelector(':scope > a');
+    const label = labelOf(tab);
+    const tabLink = label.link;
     const items = [...tab.querySelectorAll(':scope > ul > li')];
-    const paragraphs = [...tab.querySelectorAll(':scope > p')];
+    const paragraphs = [...tab.querySelectorAll(':scope > p')].filter((p) => p !== label.node);
     const explore = paragraphs.map((p) => p.querySelector(':scope > a:only-child'))
       .find((a) => a && !a.querySelector('img'));
     const bannerLink = paragraphs.map((p) => p.querySelector('a')).find((a) => a && a.querySelector('img'));
@@ -85,7 +115,7 @@ function readItem(li) {
       label: tabLink ? tabLink.textContent.trim() : '',
       href: tabLink ? tabLink.getAttribute('href') : '#',
       items,
-      type: items.length ? itemType(items[0]) : 'chip',
+      type: tabType(label, items),
       explore,
       bannerLink,
       caption: caption ? caption.textContent.trim() : '',
@@ -99,7 +129,7 @@ function readItem(li) {
 function buildItemList(tab) {
   const ul = el('ul', `nav-panel-items nav-panel-items-${tab.type}`);
   tab.items.forEach((item) => {
-    const src = item.querySelector(':scope > a');
+    const src = linkOf(item);
     if (!src) return;
     const li = el('li');
     const a = el('a');
@@ -245,7 +275,7 @@ function buildSubPanel(nav, model) {
     if (tab.items.length) {
       const chips = el('ul', 'nav-drawer-chips');
       tab.items.forEach((item) => {
-        const src = item.querySelector(':scope > a');
+        const src = linkOf(item);
         if (!src) return;
         const li = el('li');
         const a = el('a', '', textOf(src));
@@ -261,7 +291,7 @@ function buildSubPanel(nav, model) {
   if (exploreSource) {
     const p = el('p', 'nav-drawer-explore');
     const a = el('a', '', exploreSource.textContent.trim());
-    a.href = model.href;
+    a.href = model.href && model.href !== '#' ? model.href : exploreSource.getAttribute('href');
     p.append(a);
     sub.append(p);
   }
@@ -388,7 +418,9 @@ export default async function decorate(block) {
   if (!fragment) return;
   const frag = document.createElement('div');
   frag.innerHTML = fragment.html;
-  // fragment image paths are relative to the fragment, not the page
+  // fragment image paths are relative to the fragment, not the page; drop <source>s so
+  // their relative srcsets don't resolve against the page URL
+  frag.querySelectorAll('picture source').forEach((source) => source.remove());
   frag.querySelectorAll('img[src]').forEach((img) => {
     img.src = new URL(img.getAttribute('src'), fragment.base).href;
   });
