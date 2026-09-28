@@ -22,6 +22,11 @@ const LINK_OVERRIDES = {
   'Your California Privacy Choices': '/privacy/california-privacy-choices',
 };
 
+// Only these pages exist in the POC; other internal links go to the coming-soon page,
+// keeping the intended destination in ?from= for when that page is built.
+const BUILT_PAGES = ['/', '/index', '/coming-soon'];
+const comingSoon = (target) => (BUILT_PAGES.includes(target.split(/[?#]/)[0]) ? target : `/coming-soon?from=${encodeURIComponent(target)}`);
+
 const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const rebrand = (s) => RENAMES.reduce((acc, [re, to]) => acc.replace(re, to), String(s || ''));
 
@@ -35,11 +40,11 @@ function rel(href, country) {
   }
   if (!/(^|\.)tanishq\.(com|ae|co\.in|sg)$/i.test(url.hostname)) return href;
   // international sister sites become Kapoor store-finder links
-  if (country && url.hostname !== 'www.tanishq.com') return `/stores?country=${country.toLowerCase()}`;
+  if (country && url.hostname !== 'www.tanishq.com') return comingSoon(`/stores?country=${country.toLowerCase()}`);
   ['lang', 'utm_source', 'utm_medium', 'utm_campaign'].forEach((p) => url.searchParams.delete(p));
   const pathname = PATH_RENAMES.reduce((acc, [re, to]) => acc.replace(re, to), url.pathname || '/').replace(/\.html$/, '');
   const search = url.searchParams.toString();
-  return `${pathname}${search ? `?${search}` : ''}${url.hash}`;
+  return comingSoon(`${pathname}${search ? `?${search}` : ''}${url.hash}`);
 }
 
 const ICON = (paths, size = 26) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 26 26" fill="none" stroke="#222" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>\n`;
@@ -78,7 +83,7 @@ model.cols.forEach((col) => {
 lines.push('<div>', '<ul>');
 model.legal.forEach((l) => {
   const text = rebrand(l.text);
-  const href = LINK_OVERRIDES[l.text] || rel(l.href);
+  const href = LINK_OVERRIDES[l.text] ? comingSoon(LINK_OVERRIDES[l.text]) : rel(l.href);
   const icon = l.img ? '<img src="images/footer/privacy-choices.svg" alt="">' : '';
   lines.push(`<li><a href="${href}">${icon}${esc(text)}</a></li>`);
 });

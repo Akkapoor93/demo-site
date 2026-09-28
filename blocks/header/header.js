@@ -261,7 +261,7 @@ function buildSubPanel(nav, model) {
   if (exploreSource) {
     const p = el('p', 'nav-drawer-explore');
     const a = el('a', '', exploreSource.textContent.trim());
-    a.href = model.href;
+    a.href = model.href && model.href !== '#' ? model.href : exploreSource.getAttribute('href');
     p.append(a);
     sub.append(p);
   }

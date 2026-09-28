@@ -376,7 +376,8 @@ export default {
     const rawPath = new URL(params.originalURL).pathname
       .replace(/\/$/, '')
       .replace(/\.html?$/, '');
-    const path = WebImporter.FileUtils.sanitizePath(rawPath === '' ? '/index' : rawPath);
+    // the migrated homepage is the site root page
+    const path = WebImporter.FileUtils.sanitizePath(rawPath === '' || rawPath === '/homepage' ? '/index' : rawPath);
 
     return [{
       element: main,

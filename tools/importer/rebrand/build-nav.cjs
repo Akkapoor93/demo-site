@@ -32,6 +32,11 @@ const TYPE_BY_STYLE = {
   'title-only': 'chip',
 };
 
+// Only these pages exist in the POC; other internal links go to the coming-soon page,
+// keeping the intended destination in ?from= for when that page is built.
+const BUILT_PAGES = ['/', '/index', '/coming-soon'];
+const comingSoon = (target) => (BUILT_PAGES.includes(target.split(/[?#]/)[0]) ? target : `/coming-soon?from=${encodeURIComponent(target)}`);
+
 const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const slug = (s) => String(s || 'item').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'item';
 const rebrand = (s) => RENAMES.reduce((acc, [re, to]) => acc.replace(re, to), String(s || ''));
@@ -48,7 +53,7 @@ function rel(href) {
   ['lang', 'utm_source', 'utm_medium', 'utm_campaign'].forEach((p) => url.searchParams.delete(p));
   const pathname = PATH_RENAMES.reduce((acc, [re, to]) => acc.replace(re, to), url.pathname || '/').replace(/\.html$/, '');
   const search = url.searchParams.toString();
-  return `${pathname}${search ? `?${search}` : ''}${url.hash}`;
+  return comingSoon(`${pathname}${search ? `?${search}` : ''}${url.hash}`);
 }
 
 const downloads = new Map(); // source url -> local file name
@@ -123,7 +128,7 @@ const TOOL_ICONS = {
     ['/cart', 'tool-cart.svg', 'Cart'],
   ];
   lines.push('<div>', '<ul>');
-  tools.forEach(([href, icon, label]) => lines.push(`<li><a href="${href}"><img src="images/nav/${icon}" alt="${label}">${label}</a></li>`));
+  tools.forEach(([href, icon, label]) => lines.push(`<li><a href="${comingSoon(href)}"><img src="images/nav/${icon}" alt="${label}">${label}</a></li>`));
   lines.push('</ul>', '</div>');
 
   // 4. main navigation with megamenus (heading is shown above the mobile category grid)
@@ -162,7 +167,7 @@ const TOOL_ICONS = {
   lines.push('</ul>', '</div>');
 
   // 5. mobile drawer extras (account card + account links)
-  lines.push('<div>', '<h2>Access Your Account</h2>', '<p><a href="/account">Sign In</a></p>', '<ul>');
+  lines.push('<div>', '<h2>Access Your Account</h2>', `<p><a href="${comingSoon('/account')}">Sign In</a></p>`, '<ul>');
   (model.mobileLinks || []).forEach((l) => lines.push(`<li><a href="${rel(l.href)}">${esc(rebrand(l.text))}</a></li>`));
   lines.push('</ul>', '</div>');
 
