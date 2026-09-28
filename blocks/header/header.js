@@ -53,12 +53,31 @@ function tabType(label, items) {
   return 'card';
 }
 
+/**
+ * Visible label for a link. Publishing splits "image + text" links into
+ * `<li><p><a><picture></a></p><p>Text</p></li>`, so fall back to the list item's own text
+ * (excluding nested lists), then to the image alt.
+ * @param {Element} anchor The link
+ */
 function textOf(anchor) {
-  return [...anchor.childNodes]
-    .filter((n) => n.nodeType === Node.TEXT_NODE)
-    .map((n) => n.textContent)
-    .join('')
-    .trim() || anchor.textContent.trim();
+  const own = anchor.textContent.trim();
+  if (own) return own;
+  const li = anchor.closest('li');
+  if (li) {
+    const text = [...li.children]
+      .filter((child) => child.tagName !== 'UL' && !child.contains(anchor))
+      .map((child) => child.textContent.trim())
+      .filter(Boolean)
+      .join(' ');
+    if (text) return text;
+  }
+  const img = anchor.querySelector('img');
+  return img ? img.alt : '';
+}
+
+// The link of a list item, wherever the authoring pipeline placed it.
+function linkOf(li) {
+  return li.querySelector(':scope > a, :scope > p a, :scope > strong a, :scope > em a');
 }
 
 /**
@@ -110,7 +129,7 @@ function readItem(li) {
 function buildItemList(tab) {
   const ul = el('ul', `nav-panel-items nav-panel-items-${tab.type}`);
   tab.items.forEach((item) => {
-    const src = item.querySelector(':scope > a');
+    const src = linkOf(item);
     if (!src) return;
     const li = el('li');
     const a = el('a');
@@ -256,7 +275,7 @@ function buildSubPanel(nav, model) {
     if (tab.items.length) {
       const chips = el('ul', 'nav-drawer-chips');
       tab.items.forEach((item) => {
-        const src = item.querySelector(':scope > a');
+        const src = linkOf(item);
         if (!src) return;
         const li = el('li');
         const a = el('a', '', textOf(src));
