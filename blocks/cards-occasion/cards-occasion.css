@@ -1,0 +1,174 @@
+/* cards-occasion: values from source computed styles (.shop-our-occasions .occasion-track) */
+
+/* mobile: full-bleed peek carousel, one centred card with neighbours peeking */
+.cards-occasion > ul {
+  display: grid;
+  grid-auto-columns: 100%;
+  grid-auto-flow: column;
+  gap: 24px;
+  margin: 0 -24px;
+  padding: 15px 42px 24px;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 42px;
+  scrollbar-width: none;
+}
+
+.cards-occasion > ul::-webkit-scrollbar {
+  display: none;
+}
+
+.cards-occasion .cards-occasion-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--text-color);
+  text-align: center;
+  scroll-snap-align: center;
+}
+
+.cards-occasion .cards-occasion-card-image {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  background-color: var(--background-color);
+  box-shadow: 0 6px 40px 0 rgb(131 39 41 / 25%);
+  line-height: 0;
+}
+
+.cards-occasion .cards-occasion-card-image img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+/* filter chips (Men / Women / ...) */
+.cards-occasion .cards-occasion-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4.8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  line-height: normal;
+}
+
+.cards-occasion .cards-occasion-card-image .cards-occasion-chips {
+  position: absolute;
+  inset: auto 0 10px;
+  z-index: 2;
+}
+
+main .cards-occasion .cards-occasion-chips a:any-link {
+  display: block;
+  padding: 6px;
+  border: 1px solid rgb(255 255 255 / 80%);
+  border-radius: 2px;
+  color: #fff;
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+main .cards-occasion .cards-occasion-chips a:hover,
+main .cards-occasion .cards-occasion-chips a:focus-visible {
+  border-color: #fff;
+  outline-color: #fff;
+  color: #fff;
+}
+
+/* title + explore link */
+.cards-occasion .cards-occasion-card-body {
+  padding: 0;
+}
+
+.cards-occasion .cards-occasion-card-body h3 {
+  margin: 16px 0 3.2px;
+  color: #343434;
+  font-family: var(--heading-font-family);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 30px;
+}
+
+.cards-occasion .cards-occasion-card-body p {
+  margin: 0;
+}
+
+.cards-occasion .cards-occasion-cta {
+  line-height: 21px;
+}
+
+main .cards-occasion .cards-occasion-cta a:any-link {
+  color: var(--brand-color);
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 21px;
+  text-decoration: underline;
+}
+
+main .cards-occasion .cards-occasion-cta a:hover {
+  color: var(--link-hover-color);
+}
+
+@media (width >= 600px) {
+  .cards-occasion > ul {
+    grid-auto-columns: calc((100% - 24px) / 2);
+    margin: 0;
+    padding: 15px 0 24px;
+    scroll-padding-inline: 0;
+  }
+
+  .cards-occasion .cards-occasion-card {
+    scroll-snap-align: start;
+  }
+}
+
+@media (width >= 900px) {
+  .cards-occasion > ul {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(3, minmax(0, 378px));
+    justify-content: center;
+    gap: 25px;
+    padding: 20px 0 0;
+    overflow: visible;
+  }
+
+  .cards-occasion .cards-occasion-card-image .cards-occasion-chips {
+    bottom: 10%;
+    gap: 6.4px;
+  }
+
+  main .cards-occasion .cards-occasion-chips a:any-link {
+    padding: 8px;
+  }
+
+  .cards-occasion .cards-occasion-card-body h3 {
+    font-size: 28px;
+    line-height: 42px;
+  }
+
+  .cards-occasion .cards-occasion-cta {
+    line-height: 24px;
+  }
+
+  main .cards-occasion .cards-occasion-cta a:any-link {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+/* source row is 1184px (3 x 378 + 2 x 25), wider than the 1136px section content box */
+@media (width >= 1200px) {
+  .cards-occasion > ul {
+    margin: 0 -24px;
+  }
+}

@@ -1,0 +1,256 @@
+{
+  "templates": [
+    {
+      "name": "homepage",
+      "urls": [
+        "https://www.tanishq.com/homepage"
+      ],
+      "representativeUrl": "https://www.tanishq.com/homepage",
+      "description": "Tanishq homepage: hero carousel, category grid, product rails, spotlight, testimonials, occasions, collections, audience tiles, kids showcase, gifting and boutiques",
+      "blocks": [
+        {
+          "name": "carousel-hero",
+          "instances": [
+            ".experience-commerce_layouts-carouselRevamp .carousel.main-banner"
+          ]
+        },
+        {
+          "name": "cards-category",
+          "instances": [
+            ".pd-fod-category .desktop-categories .category-grid"
+          ]
+        },
+        {
+          "name": "cards-product",
+          "instances": [
+            ".experience-commerce_layouts-categoryStaticCarousel .product-carousel-track",
+            ".new-arrivals-section .new-arrivals-carousel",
+            ".shop-our-collections .product-slides-container"
+          ]
+        },
+        {
+          "name": "columns-spotlight",
+          "instances": [
+            ".spotlight-carousel .spotlight-wrapper"
+          ]
+        },
+        {
+          "name": "cards-video",
+          "instances": [
+            ".Testimonials .video-slider-wrapper"
+          ]
+        },
+        {
+          "name": "cards-occasion",
+          "instances": [
+            ".shop-our-occasions .occasion-track"
+          ]
+        },
+        {
+          "name": "cards-collection",
+          "instances": [
+            ".shop-our-collections .category-tile-lists"
+          ]
+        },
+        {
+          "name": "columns-audience",
+          "instances": [
+            ".jew-for-everyone .jewelry-section"
+          ]
+        },
+        {
+          "name": "columns-showcase",
+          "instances": [
+            ".party-edit .party-edit-content"
+          ]
+        },
+        {
+          "name": "cards-gifting",
+          "instances": [
+            ".gifting .gift-card-slides"
+          ]
+        },
+        {
+          "name": "cards-store",
+          "instances": [
+            ".home-stores .stores-cards-all"
+          ]
+        }
+      ],
+      "urlPattern": "/*",
+      "sections": [
+        {
+          "id": "1",
+          "name": "Hero banner carousel",
+          "selector": [
+            ".experience-commerce_layouts-carouselRevamp"
+          ],
+          "style": null,
+          "blocks": [
+            "carousel-hero"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "2",
+          "name": "Explore Our Categories",
+          "selector": [
+            ".experience-commerce_assets-contentAsset:has(.pd-fod-category)",
+            ".pd-fod-category"
+          ],
+          "style": null,
+          "blocks": [
+            "cards-category"
+          ],
+          "defaultContent": [
+            ".pd-fod-category .desktop-categories .title-header"
+          ]
+        },
+        {
+          "id": "3",
+          "name": "Trending Products",
+          "selector": [
+            ".experience-newTitleWithImage"
+          ],
+          "style": null,
+          "blocks": [
+            "cards-product"
+          ],
+          "defaultContent": [
+            ".experience-newTitleWithImage .title-header"
+          ]
+        },
+        {
+          "id": "4",
+          "name": "Effortless Essentials spotlight",
+          "selector": [
+            ".experience-commerce_layouts-spotLightCarousel"
+          ],
+          "style": null,
+          "blocks": [
+            "columns-spotlight"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "5",
+          "name": "Fresh From the Design Studio",
+          "selector": [
+            ".experience-commerce_layouts-contentWithCarousel"
+          ],
+          "style": "dark",
+          "blocks": [
+            "cards-product"
+          ],
+          "defaultContent": [
+            ".new-arrivals-section .new-arrivals-content"
+          ]
+        },
+        {
+          "id": "6",
+          "name": "From Our Patrons",
+          "selector": [
+            ".experience-commerce_assets-emptyContainer:has(.Testimonials)",
+            ".Testimonials"
+          ],
+          "style": null,
+          "blocks": [
+            "cards-video"
+          ],
+          "defaultContent": [
+            ".Testimonials .video-title"
+          ]
+        },
+        {
+          "id": "7",
+          "name": "Shop For Occasions",
+          "selector": [
+            ".experience-commerce_layouts-shopOurOccasions"
+          ],
+          "style": "blush",
+          "blocks": [
+            "cards-occasion"
+          ],
+          "defaultContent": [
+            ".shop-our-occasions .title-section"
+          ]
+        },
+        {
+          "id": "8",
+          "name": "The World of Tanishq",
+          "selector": [
+            ".experience-commerce_layouts-shopOurCollections"
+          ],
+          "style": "cream",
+          "blocks": [
+            "cards-collection",
+            "cards-product"
+          ],
+          "defaultContent": [
+            ".shop-our-collections > .title-section",
+            ".shop-our-collections .shop-our-collection-explore"
+          ]
+        },
+        {
+          "id": "9",
+          "name": "Jewelry for Everyone",
+          "selector": [
+            ".experience-commerce_assets-contentAsset:has(.jew-for-everyone)",
+            ".jew-for-everyone"
+          ],
+          "style": null,
+          "blocks": [
+            "columns-audience"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "10",
+          "name": "For The Little Ones",
+          "selector": [
+            ".experience-commerce_layouts-partyEdit"
+          ],
+          "style": "cream",
+          "blocks": [
+            "columns-showcase"
+          ],
+          "defaultContent": [
+            ".party-edit .party-title"
+          ]
+        },
+        {
+          "id": "11",
+          "name": "The Gifting Edit",
+          "selector": [
+            ".experience-commerce_layouts-gifting"
+          ],
+          "style": "cream",
+          "blocks": [
+            "cards-gifting"
+          ],
+          "defaultContent": [
+            ".gifting .title-section"
+          ]
+        },
+        {
+          "id": "12",
+          "name": "Our Boutiques",
+          "selector": [
+            ".experience-commerce_assets-storeLocator"
+          ],
+          "style": "cream",
+          "blocks": [
+            "cards-store"
+          ],
+          "defaultContent": [
+            ".home-stores .title-section",
+            ".home-stores .stores-explore-all"
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "projectType": "da"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "variantName": "cards-occasion",
+  "baseBlock": "cards",
+  "canonicalModel": "standalone",
+  "visualCharacteristics": {
+    "colorScheme": "blush",
+    "density": "medium",
+    "purpose": "occasion-links",
+    "imagePattern": "portrait",
+    "structure": "image + title + chip links + cta"
+  },
+  "contentPattern": "One row per occasion: cell 1 = image, cell 2 = H3 title, paragraph of chip links (Men | Women | Diamond | Gold), 'Explore' link.",
+  "options": [],
+  "memberVariantIds": ["cards-occasion"],
+  "usage": {
+    "pagesUsing": ["https://www.tanishq.com/homepage"],
+    "reuseCount": 1,
+    "lastUsed": "2026-09-26"
+  }
+}

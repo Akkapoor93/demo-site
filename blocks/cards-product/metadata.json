@@ -1,0 +1,20 @@
+{
+  "variantName": "cards-product",
+  "baseBlock": "cards",
+  "canonicalModel": "standalone",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "dense",
+    "purpose": "product-rail",
+    "imagePattern": "square-product",
+    "structure": "image + name + price"
+  },
+  "contentPattern": "One row per product: cell 1 = product image, cell 2 = linked product name (H3) + price paragraph. Wishlist heart is commerce UI and dropped.",
+  "options": [],
+  "memberVariantIds": ["cards-product"],
+  "usage": {
+    "pagesUsing": ["https://www.tanishq.com/homepage"],
+    "reuseCount": 3,
+    "lastUsed": "2026-09-26"
+  }
+}

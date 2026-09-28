@@ -1,0 +1,20 @@
+{
+  "variantName": "cards-category",
+  "baseBlock": "cards",
+  "canonicalModel": "standalone",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "medium",
+    "purpose": "category-grid",
+    "imagePattern": "square-rounded",
+    "structure": "image + label link"
+  },
+  "contentPattern": "One row per category: cell 1 = image, cell 2 = linked H3 label. Last row: cell 1 empty/icon, cell 2 = 'Explore More Categories' text + 'View All' link.",
+  "options": [],
+  "memberVariantIds": ["cards-category"],
+  "usage": {
+    "pagesUsing": ["https://www.tanishq.com/homepage"],
+    "reuseCount": 1,
+    "lastUsed": "2026-09-26"
+  }
+}

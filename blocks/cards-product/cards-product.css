@@ -1,0 +1,231 @@
+/* cards-product: horizontal product rail (image, name, price) */
+.cards-product {
+  --cards-product-gap: 16px;
+  --cards-product-per-view: 2;
+  --cards-product-arrow-prev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 42' fill='none' stroke='%23832729'%3E%3Ccircle cx='21' cy='21' r='20.5'/%3E%3Cpath d='M31 21H11m6-6-6 6 6 6'/%3E%3C/svg%3E");
+  --cards-product-arrow-next: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 42' fill='none' stroke='%23832729'%3E%3Ccircle cx='21' cy='21' r='20.5'/%3E%3Cpath d='M11 21h20m-6-6 6 6-6 6'/%3E%3C/svg%3E");
+
+  color: var(--text-color);
+}
+
+.cards-product .cards-product-viewport {
+  position: relative;
+}
+
+.cards-product .cards-product-track {
+  display: grid;
+  grid-auto-columns: calc((100% - (var(--cards-product-per-view) - 1) * var(--cards-product-gap)) / var(--cards-product-per-view));
+  grid-auto-flow: column;
+  gap: var(--cards-product-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.cards-product .cards-product-track::-webkit-scrollbar {
+  display: none;
+}
+
+.cards-product .cards-product-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+/* image: square, 4px radius, soft glow */
+.cards-product .cards-product-card-image {
+  border-radius: 4px;
+  box-shadow: 0 0 8px rgb(0 0 0 / 8%);
+  line-height: 0;
+  overflow: hidden;
+}
+
+.cards-product .cards-product-card-image a,
+.cards-product .cards-product-card-image picture {
+  display: block;
+  height: 100%;
+}
+
+.cards-product .cards-product-card-image img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+/* body: single-line name + price */
+.cards-product .cards-product-card-body {
+  padding: 8px 0;
+}
+
+.cards-product .cards-product-card-body :is(h2, h3, h4) {
+  margin: 0 0 8px;
+  overflow: hidden;
+  color: rgb(37 37 37);
+  font-family: var(--heading-font-family);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cards-product .cards-product-card-body :is(h2, h3, h4) a:any-link {
+  color: inherit;
+}
+
+.cards-product .cards-product-card-body p {
+  margin: 0;
+  color: var(--brand-color);
+  font-family: var(--heading-font-family);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* the source shows the sale price only */
+.cards-product .cards-product-card-body p del {
+  display: none;
+}
+
+.cards-product .cards-product-card-body > :last-child {
+  margin-bottom: 0;
+}
+
+/* prev / next: 42px outlined circle arrows (desktop only) */
+.cards-product .cards-product-prev,
+.cards-product .cards-product-next {
+  display: none;
+  position: absolute;
+  top: 52%;
+  z-index: 1;
+  width: 42px;
+  height: 42px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent var(--cards-product-arrow-prev) center / contain no-repeat;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.cards-product .cards-product-prev {
+  left: calc((100% - 100vw) / 2 + 20px);
+}
+
+.cards-product .cards-product-next {
+  right: calc((100% - 100vw) / 2 + 20px);
+  background-image: var(--cards-product-arrow-next);
+}
+
+.cards-product .cards-product-prev:disabled,
+.cards-product .cards-product-next:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* World of Kapoor Jewellers rail (cream section): product shot centred in a 204x200 tile */
+.section.cream .cards-product .cards-product-card-image {
+  aspect-ratio: 204 / 200;
+}
+
+.section.cream .cards-product .cards-product-card-image img {
+  height: 100%;
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+
+.section.cream .cards-product .cards-product-card-body :is(h2, h3, h4) {
+  font-weight: 400;
+}
+
+/* Fresh From the Design Studio rail (dark section): names only, white chevrons */
+.section.dark .cards-product {
+  --cards-product-arrow-prev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 37 37' fill='none' stroke='%23fff' stroke-width='1.5'%3E%3Cpath d='M23 7.5 12 18.5l11 11'/%3E%3C/svg%3E");
+  --cards-product-arrow-next: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 37 37' fill='none' stroke='%23fff' stroke-width='1.5'%3E%3Cpath d='m14 7.5 11 11-11 11'/%3E%3C/svg%3E");
+
+  color: #fff;
+}
+
+.section.dark .cards-product .cards-product-card-body :is(h2, h3, h4) {
+  color: #fff;
+  font-weight: 400;
+}
+
+@media (width >= 600px) {
+  .cards-product {
+    --cards-product-per-view: 3;
+  }
+}
+
+@media (width >= 900px) {
+  .cards-product {
+    --cards-product-gap: 20px;
+    --cards-product-per-view: 4;
+  }
+
+  .cards-product .cards-product-card-body :is(h2, h3, h4) {
+    font-size: 16px;
+  }
+
+  .cards-product .cards-product-prev,
+  .cards-product .cards-product-next {
+    display: block;
+  }
+
+  /* World of Kapoor Jewellers: ~5.4 compact tiles per view */
+  .section.cream .cards-product {
+    --cards-product-per-view: 5.4;
+  }
+
+  .section.cream .cards-product .cards-product-prev,
+  .section.cream .cards-product .cards-product-next {
+    top: 82px;
+  }
+
+  /* dark rail: intro text in a left column, rail on the right */
+  main .section.dark:has(> .cards-product-wrapper) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    align-items: start;
+    column-gap: 25px;
+    padding-inline: 60px;
+  }
+
+  main .section.dark:has(> .cards-product-wrapper) > div {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  main .section.dark:has(> .cards-product-wrapper) > .default-content-wrapper {
+    text-align: left;
+  }
+
+  .section.dark .cards-product {
+    --cards-product-gap: 25px;
+
+    margin: 0 42px 0 24px;
+  }
+
+  .section.dark .cards-product .cards-product-prev,
+  .section.dark .cards-product .cards-product-next {
+    top: 50%;
+    width: 37px;
+    height: 37px;
+  }
+
+  .section.dark .cards-product .cards-product-prev {
+    left: -35px;
+  }
+
+  .section.dark .cards-product .cards-product-next {
+    right: -61px;
+  }
+}

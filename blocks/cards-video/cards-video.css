@@ -1,0 +1,134 @@
+.cards-video {
+  margin: 30px 0 0;
+  color: var(--text-color);
+}
+
+.cards-video .cards-video-slider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.cards-video .cards-video-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 1px 6px;
+  border: 0;
+  background: none;
+  color: var(--brand-color);
+  cursor: pointer;
+}
+
+.cards-video .cards-video-arrow svg {
+  display: block;
+  width: 42px;
+  height: 42px;
+}
+
+/* mobile: one card per view, horizontal snap scrolling */
+.cards-video ul {
+  display: flex;
+  flex: 1 1 auto;
+  gap: 25px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.cards-video ul::-webkit-scrollbar {
+  display: none;
+}
+
+.cards-video .cards-video-card {
+  flex: 0 0 100%;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+.cards-video .cards-video-media {
+  position: relative;
+  overflow: hidden;
+  height: 250px;
+  border-radius: 4px;
+
+  /* placeholder until the video's first frame is available */
+  background-color: var(--blush-color);
+  line-height: 0;
+}
+
+.cards-video .cards-video-media video,
+.cards-video .cards-video-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cards-video .cards-video-poster {
+  position: absolute;
+  inset: 0;
+}
+
+/* whole tile is the click target; the circle is drawn by ::before */
+.cards-video .cards-video-play {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.cards-video .cards-video-play::before {
+  content: '\25B6';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 70%);
+  font-size: 16px;
+  line-height: 1;
+  transform: translate(-50%, -50%);
+}
+
+.cards-video .cards-video-playing .cards-video-poster,
+.cards-video .cards-video-playing .cards-video-play {
+  display: none;
+}
+
+.cards-video .cards-video-card-body {
+  padding: 8px 0 0;
+}
+
+@media (width >= 600px) {
+  .cards-video .cards-video-arrow {
+    display: none;
+  }
+
+  .cards-video ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: visible;
+  }
+}
+
+@media (width > 768px) {
+  .cards-video .cards-video-media {
+    height: 289px;
+  }
+}

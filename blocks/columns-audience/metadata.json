@@ -1,0 +1,20 @@
+{
+  "variantName": "columns-audience",
+  "baseBlock": "columns",
+  "canonicalModel": "standalone",
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "medium",
+    "purpose": "audience-links",
+    "imagePattern": "portrait-overlay",
+    "structure": "text | image + label + cta x3"
+  },
+  "contentPattern": "One row, 4 cells: cell 1 = H2 + paragraph; cells 2-4 = image, label paragraph, 'Explore' link.",
+  "options": [],
+  "memberVariantIds": ["columns-audience"],
+  "usage": {
+    "pagesUsing": ["https://www.tanishq.com/homepage"],
+    "reuseCount": 1,
+    "lastUsed": "2026-09-26"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "status": "success",
+  "url": "https://www.tanishq.com/homepage",
+  "path": "homepage",
+  "timestamp": "2026-09-27T12:46:53.690Z",
+  "title": "Buy Latest Gold and Diamond Jewelry Online by Kapoor Jewellers USA",
+  "template": "homepage",
+  "blocks": [
+    "carousel-hero",
+    "cards-category",
+    "cards-product",
+    "cards-product",
+    "cards-product",
+    "columns-spotlight",
+    "cards-video",
+    "cards-occasion",
+    "cards-collection",
+    "columns-audience",
+    "columns-showcase",
+    "cards-gifting",
+    "cards-store"
+  ]
+}

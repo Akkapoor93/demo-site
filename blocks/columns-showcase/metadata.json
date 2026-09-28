@@ -1,0 +1,20 @@
+{
+  "variantName": "columns-showcase",
+  "baseBlock": "columns",
+  "canonicalModel": "standalone",
+  "visualCharacteristics": {
+    "colorScheme": "cream",
+    "density": "medium",
+    "purpose": "poster-product-grid",
+    "imagePattern": "poster + product grid",
+    "structure": "poster + cta | product list"
+  },
+  "contentPattern": "One row, 2 cells: cell 1 = poster image + 'Explore The Kids Jewelry Collection' link; cell 2 = per product image + linked name.",
+  "options": [],
+  "memberVariantIds": ["columns-showcase"],
+  "usage": {
+    "pagesUsing": ["https://www.tanishq.com/homepage"],
+    "reuseCount": 1,
+    "lastUsed": "2026-09-26"
+  }
+}

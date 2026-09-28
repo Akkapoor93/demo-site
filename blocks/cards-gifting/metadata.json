@@ -1,0 +1,20 @@
+{
+  "variantName": "cards-gifting",
+  "baseBlock": "cards",
+  "canonicalModel": "standalone",
+  "visualCharacteristics": {
+    "colorScheme": "cream + maroon panel",
+    "density": "medium",
+    "purpose": "gift-audience-links",
+    "imagePattern": "large image + dark panel",
+    "structure": "image + title + sub links + cta"
+  },
+  "contentPattern": "One row per audience: cell 1 = image, cell 2 = H3 title, paragraph of sub-links, 'Explore' link.",
+  "options": [],
+  "memberVariantIds": ["cards-gifting"],
+  "usage": {
+    "pagesUsing": ["https://www.tanishq.com/homepage"],
+    "reuseCount": 1,
+    "lastUsed": "2026-09-26"
+  }
+}
