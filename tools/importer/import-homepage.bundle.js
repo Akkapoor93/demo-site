@@ -1010,7 +1010,7 @@ var CustomImportScript = (() => {
       if (TANISHQ_HOST.test(url.hostname)) {
         url.searchParams.delete("lang");
         const search = url.searchParams.toString();
-        const pathname = (url.pathname || "/").replace(/tanishq/gi, "kapoor");
+        const pathname = (url.pathname || "/").replace(/about-tanishq/gi, "about-kapoor-jewellers").replace(/encircle/gi, "kapoor-rewards").replace(/tanishq/gi, "kapoor").replace(/\.html$/, "");
         a.setAttribute("href", `${pathname}${search ? `?${search}` : ""}${url.hash}`);
       } else if (/(^|\.)(goo\.gl|google\.[a-z.]+)$/i.test(url.hostname) && /maps/i.test(href)) {
         a.setAttribute("href", "/stores");
