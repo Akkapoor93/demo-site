@@ -1,6 +1,10 @@
-# Kapoor Jewellers POC — Web tracking spec (v1.4)
+# Kapoor Jewellers POC — Web tracking spec (v1.5)
 
-## Created in general-dev-sandbox (by Coworker)
+**Environment change (v1.5):** everything was created in the **Prod (VA7)** sandbox, not general-dev-sandbox, and the POC stays there (decision: option 1). All objects are new and prefixed POC-Kapoor; nothing existing was changed. Journeys send only to `@adobe.com` test inboxes with consent. Later copy to `akkapoor-poc` and remove the Prod copies (customer ID type and profile-enabled schemas cannot be fully deleted).
+
+**Datastream:** POC-Kapoor Web — `e64613f3-d67d-433a-a2df-d1bb0dbe58b2` (event dataset POC-Kapoor Web Events; Edge Segmentation, Personalization Destinations and AJO on). Connected in `scripts/tracking-config.js`; Edge Network accepts the site's events (HTTP 200, no errors).
+
+## Created in Prod (by Coworker)
 
 | Object | Name | ID |
 |---|---|---|
@@ -16,12 +20,12 @@
 Change from v1.3: the event schema uses Adobe's **User Login Process** field group instead of User Account Details; field names (`userAccount.createProfile/login/logout`) are unchanged.
 Test customers: `akkapoor@adobe.com`, `akkapoor+shopper1@adobe.com`, `akkapoor+shopper2@adobe.com` (journey only emails `@adobe.com` addresses).
 Profile records are sent only after the visitor accepts the cookie banner.
-Still pending: datastream ID (`scripts/tracking-config.js` → `datastreamId`), AJO events "POC-Kapoor Add To Cart" / "POC-Kapoor Purchase", Analytics report suite.
+Still pending: AJO events "POC-Kapoor Add To Cart" / "POC-Kapoor Purchase", Analytics report suite.
 
 Owner: website (EDS storefront). Consumers: Experience Platform / Real-Time CDP, Journey Optimizer, Adobe Analytics.
 Naming prefix for every object: **POC-Kapoor**. Currency: **USD**. Site: `https://main--demo-site--akkapoor93.aem.live/`.
 
-**Environment (decided):** organisation **CXO Enablement Training LAB**, shared development sandbox **`general-dev-sandbox`** — add-only, every object prefixed `POC-Kapoor`, inventory of created objects kept by Coworker. To be copied to the dedicated sandbox **`akkapoor-poc`** once access is granted (only the sandbox name and dataset/datastream IDs change on the website side).
+**Environment (superseded by v1.5 — now Prod):** organisation **CXO Enablement Training LAB**, shared development sandbox **`general-dev-sandbox`** — add-only, every object prefixed `POC-Kapoor`, inventory of created objects kept by Coworker. To be copied to the dedicated sandbox **`akkapoor-poc`** once access is granted (only the sandbox name and dataset/datastream IDs change on the website side).
 
 **IDs:** org `0B6930256441790E0A495FFE@AdobeOrg`, tenant `acsultimatesupport` → custom fields at `_acsultimatesupport.kapoor`.
 **Commerce:** for now the site runs its own **POC shop** (catalogue `data/products.json` — 50 products incl. 11 earrings and 7 rings; cart, test accounts and test orders kept in the browser; test payment only). Adobe Commerce replaces it later; pages and events stay the same.

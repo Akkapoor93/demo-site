@@ -4,9 +4,10 @@
  */
 export default {
   orgId: '0B6930256441790E0A495FFE@AdobeOrg',
-  sandbox: 'general-dev-sandbox',
+  // Prod (VA7): all POC objects are prefixed POC-Kapoor; emails go to @adobe.com test inboxes only
+  sandbox: 'prod',
   // Data Collection → Datastreams → "POC-Kapoor Web"
-  datastreamId: '',
+  datastreamId: 'e64613f3-d67d-433a-a2df-d1bb0dbe58b2',
   // XDM tenant namespace for the "POC-Kapoor Site Context" field group
   tenant: '_acsultimatesupport',
   // Web SDK library (Adobe CDN)
