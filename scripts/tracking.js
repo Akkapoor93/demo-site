@@ -163,19 +163,24 @@ export async function sendProfile({
 }) {
   const { url, datasetId, schemaId } = config.profileStreaming;
   const entity = {
+    // unique record ID; the profile itself is keyed on the email identity
+    _id: `${customerId || 'KJ-GUEST'}-${Date.now()}`,
     personalEmail: { address: email },
     person: { name: { firstName, lastName } },
     consents: { marketing: { email: { val: optIn ? 'y' : 'n' } } },
-    ...ext({ customerId }),
+    ...(customerId ? ext({ customerId }) : {}),
   };
   log({ type: 'profile', payload: entity });
   if (!url || !datasetId || !schemaId) return;
+  // same rule as the Web SDK: nothing goes to Adobe until the cookie banner is accepted
+  if (localStorage.getItem('kapoor-consent') !== 'accept'
+    && new URLSearchParams(window.location.search).get('consent') !== 'accept') return;
   const body = {
     header: {
       schemaRef: { id: schemaId, contentType: 'application/vnd.adobe.xed-full+json;version=1' },
       imsOrgId: config.orgId,
       datasetId,
-      source: { name: 'POC-Kapoor website' },
+      source: { name: 'POC-Kapoor' },
     },
     body: {
       xdmMeta: { schemaRef: { id: schemaId, contentType: 'application/vnd.adobe.xed-full+json;version=1' } },
