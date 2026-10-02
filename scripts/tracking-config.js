@@ -13,8 +13,12 @@ export default {
   sdkUrl: 'https://cdn1.adoberesources.net/alloy/2.35.1/alloy.min.js',
   // HTTP API streaming source into "POC-Kapoor Profile" (signup / checkout opt-in)
   profileStreaming: {
-    url: '',
-    datasetId: '',
-    schemaId: '',
+    url: 'https://dcs.adobedc.net/collection/dd630444a88a6bf96dadeb0fb5d5adcbc9a2adb5219b6e0c419ff1df61dbe314',
+    datasetId: '6abfaf89d2d8d9adbd2991ac',
+    schemaId: 'https://ns.adobe.com/acsultimatesupport/schemas/c040468296658526c81f3ca218e3c76428f269456abf7dfc',
   },
+  // reference (created by Coworker):
+  // event dataset "POC-Kapoor Web Events" 6abfaf7e367544cf7b89689c
+  // event schema https://ns.adobe.com/acsultimatesupport/schemas/
+  //   24efeb2c1f598841fde7788993b9b94d21ea3366b2c15a10
 };

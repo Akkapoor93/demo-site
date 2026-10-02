@@ -1,4 +1,22 @@
-# Kapoor Jewellers POC — Web tracking spec (v1.3)
+# Kapoor Jewellers POC — Web tracking spec (v1.4)
+
+## Created in general-dev-sandbox (by Coworker)
+
+| Object | Name | ID |
+|---|---|---|
+| Identity namespace | POC-Kapoor Customer ID (`kapoorCustomerId`, cross-device) | 22037357 |
+| Field group | POC-Kapoor Site Context (pageType, category, productImageUrl, productUrl, customerId) | `https://ns.adobe.com/acsultimatesupport/mixins/c4e4e4d86677749b9a69b6a53ceb2c888d811b995475e90f` |
+| Event schema | POC-Kapoor Web Events | `https://ns.adobe.com/acsultimatesupport/schemas/24efeb2c1f598841fde7788993b9b94d21ea3366b2c15a10` |
+| Profile schema | POC-Kapoor Profile | `https://ns.adobe.com/acsultimatesupport/schemas/c040468296658526c81f3ca218e3c76428f269456abf7dfc` |
+| Dataset | POC-Kapoor Web Events | `6abfaf7e367544cf7b89689c` |
+| Dataset | POC-Kapoor Profile | `6abfaf89d2d8d9adbd2991ac` |
+| Streaming source | POC-Kapoor Profile Inlet (no auth, demo) | `https://dcs.adobedc.net/collection/dd630444a88a6bf96dadeb0fb5d5adcbc9a2adb5219b6e0c419ff1df61dbe314` — connected in `scripts/tracking-config.js`; browser posts verified (HTTP 200) |
+| Audiences (draft) | Signed-up, Purchasers, Cart Abandoners (7d), High-value | see Coworker inventory |
+
+Change from v1.3: the event schema uses Adobe's **User Login Process** field group instead of User Account Details; field names (`userAccount.createProfile/login/logout`) are unchanged.
+Test customers: `akkapoor@adobe.com`, `akkapoor+shopper1@adobe.com`, `akkapoor+shopper2@adobe.com` (journey only emails `@adobe.com` addresses).
+Profile records are sent only after the visitor accepts the cookie banner.
+Still pending: datastream ID (`scripts/tracking-config.js` → `datastreamId`), AJO events "POC-Kapoor Add To Cart" / "POC-Kapoor Purchase", Analytics report suite.
 
 Owner: website (EDS storefront). Consumers: Experience Platform / Real-Time CDP, Journey Optimizer, Adobe Analytics.
 Naming prefix for every object: **POC-Kapoor**. Currency: **USD**. Site: `https://main--demo-site--akkapoor93.aem.live/`.
