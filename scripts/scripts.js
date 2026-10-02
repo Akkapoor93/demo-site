@@ -11,6 +11,7 @@ import {
   loadCSS,
   buildBlock,
 } from './aem.js';
+import { trackPageView, pageCategory } from './tracking.js';
 
 if (window.trustedTypes && window.trustedTypes.createPolicy) {
   const innerTT = window.trustedTypes.createPolicy('tt-inner', {
@@ -197,6 +198,9 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  // page view (event 1); shop pages set page-type / category metadata
+  trackPageView({ category: pageCategory() });
 }
 
 /**
@@ -208,7 +212,31 @@ function loadDelayed() {
   // load anything that can be postponed to the latest here
 }
 
+/**
+ * Local / aemcoder preview serves pages under /content/, while authored links use site
+ * paths (/jewelry/earrings). In that preview only, follow internal links under /content.
+ */
+function previewLinks() {
+  if (!window.location.pathname.startsWith('/content/')) return;
+  const toPreview = (path) => (path === '/' ? '/content/index' : `/content${path}`);
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href]');
+    if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey) return;
+    const url = new URL(a.href, window.location.href);
+    if (url.origin !== window.location.origin || url.pathname.startsWith('/content/')) return;
+    if (/\.(json|png|jpe?g|svg|webp|gif|pdf)$/i.test(url.pathname)) return;
+    e.preventDefault();
+    window.location.href = `${toPreview(url.pathname)}${url.search}${url.hash}`;
+  });
+  document.addEventListener('submit', (e) => {
+    const form = e.target;
+    const action = form.getAttribute('action');
+    if (action && action.startsWith('/') && !action.startsWith('/content/')) form.action = toPreview(action);
+  }, true);
+}
+
 async function loadPage() {
+  previewLinks();
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();

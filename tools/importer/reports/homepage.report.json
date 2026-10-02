@@ -1,23 +1,8 @@
 {
-  "status": "success",
+  "status": "failed",
   "url": "https://www.tanishq.com/homepage",
   "path": "homepage",
-  "timestamp": "2026-09-28T10:17:16.485Z",
-  "title": "Buy Latest Gold and Diamond Jewelry Online by Kapoor Jewellers USA",
-  "template": "homepage",
-  "blocks": [
-    "carousel-hero",
-    "cards-category",
-    "cards-product",
-    "cards-product",
-    "cards-product",
-    "columns-spotlight",
-    "cards-video",
-    "cards-occasion",
-    "cards-collection",
-    "columns-audience",
-    "columns-showcase",
-    "cards-gifting",
-    "cards-store"
-  ]
+  "timestamp": "2026-10-02T11:26:40.493Z",
+  "error": "page.evaluate: Error: Failed to import page: Cannot read properties of undefined (reading 'replace')\n    at eval (eval at evaluate (:290:30), <anonymous>:29:15)\n    at async <anonymous>:316:30",
+  "errorStack": "page.evaluate: Error: Failed to import page: Cannot read properties of undefined (reading 'replace')\n    at eval (eval at evaluate (:290:30), <anonymous>:29:15)\n    at async <anonymous>:316:30\n    at processUrl (/home/node/.excat-marketplaces/excat-marketplace/excat/skills/excat-content-import/scripts/run-bulk-import.js:693:31)\n    at async main (/home/node/.excat-marketplaces/excat-marketplace/excat/skills/excat-content-import/scripts/run-bulk-import.js:956:22)"
 }

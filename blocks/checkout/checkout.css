@@ -1,0 +1,121 @@
+.checkout {
+  display: grid;
+  gap: 32px;
+}
+
+.checkout .checkout-form fieldset {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 20px;
+  padding: 0;
+  border: 0;
+}
+
+.checkout .checkout-form legend {
+  margin-bottom: 8px;
+  font-family: var(--heading-font-family);
+  font-size: 20px;
+  color: var(--heading-color);
+}
+
+.checkout .checkout-field {
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+}
+
+.checkout .checkout-field input {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font: inherit;
+}
+
+.checkout .checkout-field input:focus {
+  outline: 2px solid var(--brand-color);
+  outline-offset: 0;
+}
+
+.checkout .checkout-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.checkout .checkout-submit {
+  width: 100%;
+}
+
+.checkout .checkout-error {
+  margin: 8px 0 0;
+  color: #b00020;
+}
+
+.checkout .checkout-summary {
+  align-self: start;
+  padding: 20px;
+  border-radius: 6px;
+  background-color: var(--cream-color);
+}
+
+.checkout .checkout-summary h2 {
+  margin: 0 0 12px;
+  font-size: 20px;
+}
+
+.checkout .checkout-summary ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checkout .checkout-summary li,
+.checkout .checkout-summary .checkout-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  font-size: 14px;
+}
+
+.checkout .checkout-summary .checkout-total {
+  margin: 8px 0 0;
+  border-top: 1px solid #e3d7c3;
+  font-weight: 700;
+}
+
+.checkout .checkout-confirmation,
+.checkout .checkout-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.checkout .checkout-confirmation ul {
+  display: inline-block;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.checkout .checkout-test-note {
+  font-size: 13px;
+  color: var(--subtitle-color);
+}
+
+@media (width >= 900px) {
+  .checkout {
+    grid-template-columns: 3fr 2fr;
+    gap: 56px;
+  }
+
+  .checkout .checkout-form fieldset {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .checkout .checkout-form legend {
+    grid-column: 1 / -1;
+  }
+}
