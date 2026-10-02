@@ -1011,6 +1011,11 @@ var CustomImportScript = (() => {
         ["lang", "utm_source", "utm_medium", "utm_campaign"].forEach((p) => url.searchParams.delete(p));
         const search = url.searchParams.toString();
         const pathname = (url.pathname || "/").replace(/about-tanishq/gi, "about-kapoor-jewellers").replace(/encircle/gi, "kapoor-rewards").replace(/tanishq/gi, "kapoor").replace(/\.html$/, "");
+        const productSlug = pathname.match(/^\/product\/([^/]+)$/);
+        if (productSlug) {
+          a.setAttribute("href", `/product?sku=${productSlug[1].split("-").pop().toUpperCase()}`);
+          return;
+        }
         a.setAttribute("href", `${pathname}${search ? `?${search}` : ""}${url.hash}`);
       } else if (/(^|\.)(goo\.gl|google\.[a-z.]+)$/i.test(url.hostname) && /maps/i.test(href)) {
         a.setAttribute("href", "/stores");

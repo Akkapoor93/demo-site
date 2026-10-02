@@ -1,3 +1,5 @@
+import { cartCount } from '../../scripts/shop.js';
+
 // Breakpoint that switches the mobile drawer to the desktop header
 const isDesktop = window.matchMedia('(width >= 900px)');
 
@@ -400,6 +402,21 @@ function buildBar(nav, sections) {
       const icon = img.cloneNode();
       icon.alt = '';
       a.append(icon);
+    }
+    // the cart icon shows the number of items in the POC shop cart
+    if (/\/cart\b/.test(a.getAttribute('href') || '')) {
+      const badge = el('span', 'nav-cart-count');
+      badge.setAttribute('aria-hidden', 'true');
+      const update = () => {
+        const n = cartCount();
+        badge.textContent = n > 9 ? '9+' : String(n);
+        badge.hidden = n === 0;
+        a.setAttribute('aria-label', n ? `${label} (${n} item${n === 1 ? '' : 's'})` : label);
+      };
+      update();
+      window.addEventListener('kapoor:cart', update);
+      window.addEventListener('storage', (e) => { if (e.key === 'kapoor-cart') update(); });
+      a.append(badge);
     }
     li.append(a);
     tools.append(li);

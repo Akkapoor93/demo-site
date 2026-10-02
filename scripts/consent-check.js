@@ -1,25 +1,23 @@
 let consentedLoaded = false;
+const CONSENT_KEY = 'kapoor-consent';
 
 /**
- * Dummy consent implementation.
+ * Simple consent banner for the POC (stands in for a real CMP such as OneTrust).
+ * Consented scripts (Web SDK / analytics) load only after "Accept".
  *
- * By default consent is declined, so consented scripts (analytics, martech, etc.)
- * are not loaded. This stands in for a real CMP (OneTrust, etc.) and can be
- * swapped out later.
+ * The stored choice can be overridden with a query parameter for testing:
+ *   ?consent=accept   grant consent
+ *   ?consent=decline  decline consent
  *
- * The default can be overridden with a query parameter for testing:
- *   ?consent=accept   grant consent (loads consented.js)
- *   ?consent=decline  decline consent (default behavior)
- *
- * @returns {boolean} true if the user has consented
+ * @returns {boolean|null} true/false once the visitor has chosen, null if not yet
  */
-function hasConsent() {
-  const consent = new URLSearchParams(window.location.search).get('consent');
-  if (consent !== null) {
-    return ['accept', 'true', '1', 'yes'].includes(consent.toLowerCase());
-  }
-  // default: decline
-  return false;
+function consentChoice() {
+  const param = new URLSearchParams(window.location.search).get('consent');
+  if (param !== null) return ['accept', 'true', '1', 'yes'].includes(param.toLowerCase());
+  const stored = localStorage.getItem(CONSENT_KEY);
+  if (stored === 'accept') return true;
+  if (stored === 'decline') return false;
+  return null;
 }
 
 /**
@@ -36,11 +34,33 @@ function loadConsented() {
  * scripts if consent has been granted.
  */
 function onConsentUpdate() {
-  const consented = hasConsent();
+  const consented = consentChoice() === true;
   window.dispatchEvent(new CustomEvent('consent.update', { detail: { consented } }));
   if (consented) {
     loadConsented();
   }
 }
 
+function showBanner() {
+  const banner = document.createElement('div');
+  banner.className = 'consent-banner';
+  banner.setAttribute('role', 'dialog');
+  banner.setAttribute('aria-label', 'Cookie consent');
+  banner.innerHTML = `
+    <p>We use cookies and Adobe Experience Cloud to measure visits and personalise offers. (POC demo)</p>
+    <div class="consent-banner-actions">
+      <button type="button" class="button secondary" data-choice="decline">Decline</button>
+      <button type="button" class="button primary" data-choice="accept">Accept</button>
+    </div>`;
+  banner.addEventListener('click', (e) => {
+    const choice = e.target.closest('button')?.dataset.choice;
+    if (!choice) return;
+    localStorage.setItem(CONSENT_KEY, choice);
+    banner.remove();
+    onConsentUpdate();
+  });
+  document.body.append(banner);
+}
+
+if (consentChoice() === null) showBanner();
 onConsentUpdate();

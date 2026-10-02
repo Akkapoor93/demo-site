@@ -558,3 +558,25 @@ header .nav-drawer-explore a:any-link {
     color: #343434;
   }
 }
+
+/* cart item count on the bag icon */
+header .nav-tools a:any-link:has(.nav-cart-count) {
+  position: relative;
+}
+
+header .nav-cart-count {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background-color: var(--brand-color);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  box-sizing: border-box;
+}

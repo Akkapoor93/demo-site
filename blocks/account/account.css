@@ -1,0 +1,84 @@
+.account {
+  display: grid;
+  gap: 32px;
+}
+
+.account .account-form,
+.account .account-profile,
+.account .account-orders {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  padding: 24px;
+  border-radius: 6px;
+  background-color: var(--cream-color);
+}
+
+.account h2 {
+  margin: 0 0 4px;
+  font-size: 22px;
+}
+
+.account .account-field {
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+}
+
+.account .account-field input {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  font: inherit;
+}
+
+.account .account-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.account .account-error {
+  margin: 0;
+  color: #b00020;
+  font-size: 14px;
+}
+
+.account .account-note {
+  margin: 0;
+  font-size: 13px;
+  color: var(--subtitle-color);
+}
+
+.account .account-orders ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.account .account-orders li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e3d7c3;
+  font-size: 14px;
+}
+
+.account > .account-note {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+@media (width >= 900px) {
+  .account {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+
+  .account .account-orders li {
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+  }
+}
