@@ -50,6 +50,7 @@ export const productPath = (product) => sitePath(`/product?sku=${encodeURICompon
 export const categoryPath = (category) => sitePath(CATEGORY_PATHS[category] || '/');
 // absolute product link for emails (always the public path, without the local /content prefix)
 const productLink = (product) => new URL(`/product?sku=${encodeURIComponent(product.sku)}`, window.location.origin).href;
+const imageLink = (product) => new URL(product.image, window.location.origin).href;
 
 const lineItem = (product, quantity) => ({
   SKU: product.sku,
@@ -90,11 +91,53 @@ export const cartTotal = (lines) => {
   return Math.round(sum * 100) / 100;
 };
 
+/* ---------- promo codes ---------- */
+
+// codes offered in POC-Kapoor journey emails (checked in the browser; POC only)
+const PROMOS = { KAPOOR10: { percent: 10, label: '10% off' } };
+
+export function applyPromo(code) {
+  const key = String(code || '').trim().toUpperCase();
+  if (!PROMOS[key]) throw new Error('This promo code is not valid.');
+  const cart = getCart();
+  cart.promo = key;
+  saveCart(cart);
+}
+
+export function removePromo() {
+  const cart = getCart();
+  delete cart.promo;
+  saveCart(cart);
+}
+
+/** Applies a code from the page address (e.g. a reminder email links to /cart?promo=KAPOOR10). */
+export function promoFromUrl() {
+  const code = new URLSearchParams(window.location.search).get('promo');
+  if (!code) return;
+  try {
+    applyPromo(code);
+  } catch (e) { /* ignore unknown codes in links */ }
+}
+
+/** Subtotal, applied promo code, discount and total for the cart. */
+export function cartTotals(lines, cart = getCart()) {
+  const subtotal = cartTotal(lines);
+  const promo = PROMOS[cart.promo] ? cart.promo : null;
+  const discount = promo ? Math.round(subtotal * PROMOS[promo].percent) / 100 : 0;
+  return {
+    subtotal,
+    promo,
+    promoLabel: promo ? PROMOS[promo].label : '',
+    discount,
+    total: Math.round((subtotal - discount) * 100) / 100,
+  };
+}
+
 function trackAdd(cart, product, qty, method) {
   trackEvent('commerce.productListAdds', {
     commerce: { productListAdds: { value: 1 }, cart: { cartID: cart.id } },
     productListItems: [{ ...lineItem(product, qty), productAddMethod: method }],
-  }, { productImageUrl: product.image, productUrl: productLink(product) });
+  }, { productImageUrl: imageLink(product), productUrl: productLink(product) });
 }
 
 export function addToCart(product, qty = 1, method = 'product page') {
@@ -129,7 +172,9 @@ export function trackProductView(product) {
     commerce: { productViews: { value: 1 } },
     productListItems: [lineItem(product, 1)],
   }, {
-    productImageUrl: product.image, productUrl: productLink(product), category: product.category,
+    productImageUrl: imageLink(product),
+    productUrl: productLink(product),
+    category: product.category,
   });
 }
 
@@ -209,7 +254,9 @@ export async function placeOrder({
   const cart = getCart();
   const lines = await cartLines(cart);
   if (!lines.length) throw new Error('Your cart is empty.');
-  const total = cartTotal(lines);
+  const {
+    subtotal, promo, discount, total,
+  } = cartTotals(lines, cart);
   const order = {
     id: randomId('KJ-ORD'),
     date: new Date().toISOString(),
@@ -223,6 +270,9 @@ export async function placeOrder({
       price: l.product.price,
       image: l.product.image,
     })),
+    subtotal,
+    promo,
+    discount,
     total,
   };
   write(ORDERS_KEY, [...read(ORDERS_KEY, []), order]);

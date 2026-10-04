@@ -1,5 +1,6 @@
 import {
-  cartLines, cartTotal, formatPrice, placeOrder, currentCustomer, sitePath, trackCheckout,
+  cartLines, cartTotals, applyPromo, removePromo, promoFromUrl,
+  formatPrice, placeOrder, currentCustomer, sitePath, trackCheckout,
 } from '../../scripts/shop.js';
 
 function el(tag, className, text) {
@@ -22,7 +23,38 @@ function field(label, name, { type = 'text', value = '', autocomplete } = {}) {
   return wrap;
 }
 
-function summary(lines) {
+function row(label, value, className = 'checkout-row') {
+  const p = el('p', className);
+  p.append(el('span', '', label), el('span', '', value));
+  return p;
+}
+
+function promoForm(onChange) {
+  const form = el('form', 'checkout-promo');
+  const label = el('label', 'checkout-field');
+  const input = el('input');
+  input.name = 'promo';
+  input.autocomplete = 'off';
+  label.append(el('span', '', 'Promo code'), input);
+  const apply = el('button', 'button secondary', 'Apply');
+  apply.type = 'submit';
+  const message = el('p', 'checkout-error');
+  message.setAttribute('role', 'alert');
+  form.append(label, apply, message);
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    try {
+      applyPromo(input.value);
+      onChange();
+    } catch (err) {
+      message.textContent = err.message;
+    }
+  });
+  return form;
+}
+
+function summary(lines, onChange) {
+  const totals = cartTotals(lines);
   const aside = el('aside', 'checkout-summary');
   aside.append(el('h2', '', 'Your order'));
   const list = el('ul');
@@ -31,9 +63,22 @@ function summary(lines) {
     li.append(el('span', '', `${l.product.name} × ${l.qty}`), el('span', '', formatPrice(l.product.price * l.qty)));
     list.append(li);
   });
-  const total = el('p', 'checkout-total');
-  total.append(el('span', '', 'Total'), el('span', '', formatPrice(cartTotal(lines))));
-  aside.append(list, total);
+  aside.append(list);
+  if (totals.promo) {
+    const discount = row(`${totals.promo} (${totals.promoLabel})`, `−${formatPrice(totals.discount)}`, 'checkout-row checkout-discount');
+    const remove = el('button', 'checkout-promo-remove', 'Remove');
+    remove.type = 'button';
+    remove.setAttribute('aria-label', `Remove promo code ${totals.promo}`);
+    remove.addEventListener('click', () => {
+      removePromo();
+      onChange();
+    });
+    discount.firstElementChild.append(' ', remove);
+    aside.append(row('Subtotal', formatPrice(totals.subtotal)), discount);
+  } else {
+    aside.append(promoForm(onChange));
+  }
+  aside.append(row('Total', formatPrice(totals.total), 'checkout-total'));
   return aside;
 }
 
@@ -46,7 +91,9 @@ function confirmation(order) {
   );
   const list = el('ul');
   order.items.forEach((i) => list.append(el('li', '', `${i.name} × ${i.qty} — ${formatPrice(i.price * i.qty)}`)));
-  box.append(list, el('p', 'checkout-total', `Total ${formatPrice(order.total)}`));
+  if (order.discount) box.append(list, el('p', '', `${order.promo}: −${formatPrice(order.discount)}`));
+  else box.append(list);
+  box.append(el('p', 'checkout-total', `Total ${formatPrice(order.total)}`));
   const more = el('p');
   const shop = el('a', 'button secondary', 'Continue shopping');
   shop.href = sitePath('/');
@@ -62,6 +109,7 @@ function confirmation(order) {
  * @param {Element} block The block element
  */
 export default async function decorate(block) {
+  promoFromUrl();
   const lines = await cartLines();
   if (!lines.length) {
     const empty = el('div', 'checkout-empty');
@@ -105,7 +153,7 @@ export default async function decorate(block) {
   optIn.name = 'optIn';
   optInLabel.append(optIn, ' Email me offers and order updates from Kapoor Jewellers');
 
-  const submit = el('button', 'button primary checkout-submit', `Place order · ${formatPrice(cartTotal(lines))}`);
+  const submit = el('button', 'button primary checkout-submit', `Place order · ${formatPrice(cartTotals(lines).total)}`);
   submit.type = 'submit';
   const error = el('p', 'checkout-error');
   error.setAttribute('role', 'alert');
@@ -133,6 +181,14 @@ export default async function decorate(block) {
     }
   });
 
-  block.replaceChildren(form, summary(lines));
+  let aside;
+  const refresh = () => {
+    const next = summary(lines, refresh);
+    if (aside) aside.replaceWith(next);
+    aside = next;
+    submit.textContent = `Place order · ${formatPrice(cartTotals(lines).total)}`;
+  };
+  refresh();
+  block.replaceChildren(form, aside);
   trackCheckout(lines);
 }

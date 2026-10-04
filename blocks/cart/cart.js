@@ -1,5 +1,6 @@
 import {
-  cartLines, cartTotal, setQuantity, formatPrice, productPath, sitePath, trackCartView,
+  cartLines, cartTotals, promoFromUrl, setQuantity,
+  formatPrice, productPath, sitePath, trackCartView,
 } from '../../scripts/shop.js';
 
 function el(tag, className, text) {
@@ -68,8 +69,13 @@ async function render(block) {
   const summary = el('aside', 'cart-summary');
   summary.append(el('h2', '', 'Order summary'));
   const rows = el('dl');
-  [['Subtotal', formatPrice(cartTotal(lines))], ['Shipping', 'Free'], ['Total', formatPrice(cartTotal(lines))]]
-    .forEach(([k, v]) => rows.append(el('dt', '', k), el('dd', '', v)));
+  const totals = cartTotals(lines);
+  [
+    ['Subtotal', formatPrice(totals.subtotal)],
+    ...(totals.promo ? [[`${totals.promo} (${totals.promoLabel})`, `−${formatPrice(totals.discount)}`]] : []),
+    ['Shipping', 'Free'],
+    ['Total', formatPrice(totals.total)],
+  ].forEach(([k, v]) => rows.append(el('dt', '', k), el('dd', '', v)));
   const checkout = el('a', 'button primary cart-checkout', 'Proceed to checkout');
   checkout.href = sitePath('/checkout');
   summary.append(rows, checkout);
@@ -83,6 +89,7 @@ async function render(block) {
  * @param {Element} block The block element
  */
 export default async function decorate(block) {
+  promoFromUrl();
   const lines = await render(block);
   trackCartView(lines);
 }

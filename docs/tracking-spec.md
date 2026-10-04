@@ -20,6 +20,7 @@
 Change from v1.3: the event schema uses Adobe's **User Login Process** field group instead of User Account Details; field names (`userAccount.createProfile/login/logout`) are unchanged.
 Test customers: `akkapoor@adobe.com`, `akkapoor+shopper1@adobe.com`, `akkapoor+shopper2@adobe.com` (journey only emails `@adobe.com` addresses).
 Profile records are sent only after the visitor accepts the cookie banner.
+**Cart-reminder journey (website side):** every add-to-cart from a signed-in shopper carries `identityMap.Email` (and `kapoorCustomerId`), plus `kapoor.productImageUrl` / `productUrl` as absolute URLs. Promo code **KAPOOR10** (10% off) can be entered at checkout, or applied from a link — use `/cart?promo=KAPOOR10` for the email's "Complete your purchase" button. With a code, `commerce.order.priceTotal` and the payment amount are the discounted total; `productListItems[].priceTotal` stays at list price. The code itself is not sent (no schema field for it yet).
 Still pending: AJO events "POC-Kapoor Add To Cart" / "POC-Kapoor Purchase", Analytics report suite.
 
 Owner: website (EDS storefront). Consumers: Experience Platform / Real-Time CDP, Journey Optimizer, Adobe Analytics.
