@@ -8,6 +8,8 @@ import config from './tracking-config.js';
 
 const LOG_KEY = 'kapoor-tracking-log';
 const IDENTITY_KEY = 'kapoor-identity';
+// email of the shopper this browser's Adobe visitor ID (ECID) has been linked to
+const OWNER_KEY = 'kapoor-adobe-id-owner';
 const queue = [];
 let sender = null;
 
@@ -83,10 +85,26 @@ function log(entry) {
 
 window.addEventListener('load', renderDebug);
 
+const inFlight = new Set();
+
+function send(item) {
+  // a consent change waits for events already on their way; sent at the same moment,
+  // the Web SDK can hold those events back indefinitely
+  const ready = item.type === 'consent' ? Promise.allSettled([...inFlight]) : Promise.resolve();
+  const done = ready.then(() => sender(item));
+  inFlight.add(done);
+  done.finally(() => inFlight.delete(done));
+  return done;
+}
+
+/**
+ * Resolves once the item has been sent. Items queued before the Web SDK is ready resolve when
+ * it sends them (never, if the visitor has not accepted cookies — callers should not wait long).
+ */
 function dispatch(item) {
   log(item);
-  if (sender) sender(item);
-  else queue.push(item);
+  if (sender) return send(item);
+  return new Promise((resolve) => { queue.push({ item, resolve }); });
 }
 
 /** Page type for the current page: `page-type` metadata, else derived from the path. */
@@ -127,7 +145,7 @@ export function trackEvent(eventType, xdm = {}, kapoor = {}) {
   };
   const ids = identityMap();
   if (ids) payload.identityMap = ids;
-  dispatch({ type: 'event', eventType, payload });
+  return dispatch({ type: 'event', eventType, payload });
 }
 
 export function trackPageView(kapoor = {}) {
@@ -143,15 +161,43 @@ export function trackPageView(kapoor = {}) {
 export function identify({ email, customerId }) {
   const current = storedIdentity();
   localStorage.setItem(IDENTITY_KEY, JSON.stringify({ ...current, email, customerId }));
+  if (email) localStorage.setItem(OWNER_KEY, email.trim().toLowerCase());
 }
 
 export function forgetIdentity() {
   localStorage.removeItem(IDENTITY_KEY);
 }
 
+/**
+ * True when this browser's Adobe visitor ID is already linked to a different shopper.
+ * Sending a second shopper's email with the same ID would merge both into one profile.
+ */
+export function linkedToSomeoneElse(email) {
+  const owner = localStorage.getItem(OWNER_KEY) || storedIdentity().email;
+  return !!owner && owner !== String(email || '').trim().toLowerCase();
+}
+
+/** Drops the Adobe visitor ID cookies so the next page load starts as a new visitor. */
+export function resetVisitorId() {
+  const names = [
+    `kndctr_${config.orgId.replace('@', '_')}_identity`,
+    `AMCV_${encodeURIComponent(config.orgId)}`, // legacy ECID copy the Web SDK can read back
+  ];
+  const parts = window.location.hostname.split('.');
+  names.forEach((name) => {
+    const expired = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+    document.cookie = expired;
+    // cookies may be set on the widest domain the browser accepts, so clear every level
+    parts.forEach((_, i) => {
+      document.cookie = `${expired}; domain=.${parts.slice(i).join('.')}`;
+    });
+  });
+  localStorage.removeItem(OWNER_KEY);
+}
+
 /** Records the "Email me offers" choice on the profile (Web SDK setConsent, Adobe 2.0). */
 export function setMarketingConsent(optIn) {
-  dispatch({ type: 'consent', optIn, identityMap: identityMap() });
+  return dispatch({ type: 'consent', optIn, identityMap: identityMap() });
 }
 
 /**
@@ -193,9 +239,9 @@ export async function sendProfile({
 }
 
 /** Called by web-sdk.js once the Web SDK is ready: sends everything queued so far. */
-export function attachSender(send) {
-  sender = send;
-  queue.splice(0).forEach(send);
+export function attachSender(webSdkSend) {
+  sender = webSdkSend;
+  queue.splice(0).forEach(({ item, resolve }) => send(item).then(resolve));
 }
 
 // link and menu clicks in the header, footer and calls to action (event 2)

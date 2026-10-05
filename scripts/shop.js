@@ -240,11 +240,13 @@ export function signIn({ email }) {
   return customer;
 }
 
+/** Signs out; resolves once the logout event has been sent. */
 export function signOut() {
-  trackEvent('userAccount.logout', { userAccount: { logout: 1 } });
+  const sent = trackEvent('userAccount.logout', { userAccount: { logout: 1 } });
   localStorage.removeItem(SESSION_KEY);
   forgetIdentity();
   window.dispatchEvent(new CustomEvent('kapoor:account', { detail: null }));
+  return sent;
 }
 
 /* ---------- test orders ---------- */

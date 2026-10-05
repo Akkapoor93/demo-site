@@ -37,16 +37,26 @@ async function init() {
     orgId: config.orgId,
     defaultConsent: 'in',
     clickCollectionEnabled: false,
+    // visitor ID lives only in this site's cookie, so a reset really starts a new visitor
+    thirdPartyCookiesEnabled: false,
+    // no legacy Visitor API on this site; stops the ECID being copied into an AMCV cookie
+    idMigrationEnabled: false,
   });
   attachSender((item) => {
     if (item.type === 'event') {
-      window.alloy('sendEvent', { xdm: item.payload }).catch(() => {});
-    } else if (item.type === 'consent') {
-      window.alloy('setConsent', {
-        consent: [{ standard: 'Adobe', version: '2.0', value: { marketing: { email: { val: item.optIn ? 'y' : 'n' } } } }],
+      return window.alloy('sendEvent', { xdm: item.payload }).catch(() => {});
+    }
+    if (item.type === 'consent') {
+      const value = {
+        collect: { val: 'y' }, // the visitor accepted the cookie banner (web-sdk.js only loads then)
+        marketing: { email: { val: item.optIn ? 'y' : 'n' } },
+      };
+      return window.alloy('setConsent', {
+        consent: [{ standard: 'Adobe', version: '2.0', value }],
         ...(item.identityMap ? { identityMap: item.identityMap } : {}),
       }).catch(() => {});
     }
+    return undefined;
   });
 }
 
