@@ -61,7 +61,7 @@ function renderDebug() {
     document.body.append(panel);
   }
   const list = JSON.parse(sessionStorage.getItem(LOG_KEY) || '[]');
-  const sent = window.alloy ? 'sending to Adobe' : 'not sent (dry run / no consent)';
+  const sent = window.alloy ? 'sending to Adobe' : 'NOT sent: accept the cookie banner';
   panel.innerHTML = `<strong style="color:#f3dfb3">Tracking events — ${sent}</strong><br>`;
   list.slice(-15).reverse().forEach((e) => {
     const row = document.createElement('div');

@@ -240,6 +240,16 @@ export function signIn({ email }) {
   return customer;
 }
 
+// cookies accepted while already signed in: send the profile and offers choice now,
+// since nothing was sent at sign-in
+window.addEventListener('consent.update', ({ detail }) => {
+  const customer = currentCustomer();
+  if (!detail?.consented || !detail.changed || !customer) return;
+  const account = read(ACCOUNTS_KEY, {})[customer.email] || {};
+  sendProfile({ ...customer, optIn: !!account.optIn });
+  setMarketingConsent(!!account.optIn);
+});
+
 /** Signs out; resolves once the logout event has been sent. */
 export function signOut() {
   const sent = trackEvent('userAccount.logout', { userAccount: { logout: 1 } });
