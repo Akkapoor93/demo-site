@@ -222,7 +222,7 @@ export function signUp({
   accounts[key] = account;
   write(ACCOUNTS_KEY, accounts);
   const customer = startSession(account);
-  trackEvent('userAccount.createProfile', { userAccount: { createProfile: { value: 1 } } });
+  trackEvent('userAccount.createProfile', { userAccount: { createProfile: 1 } });
   sendProfile({ ...customer, optIn: account.optIn });
   setMarketingConsent(account.optIn);
   return customer;
@@ -232,7 +232,7 @@ export function signIn({ email }) {
   const account = read(ACCOUNTS_KEY, {})[email.trim().toLowerCase()];
   if (!account) throw new Error('No account found for this email. Create an account first.');
   const customer = startSession(account);
-  trackEvent('userAccount.login', { userAccount: { login: { value: 1 } } });
+  trackEvent('userAccount.login', { userAccount: { login: 1 } });
   // re-send the profile so accounts created before consent (or before the profile
   // connection existed) still get a profile with their email-offers choice
   sendProfile({ ...customer, optIn: account.optIn });
@@ -241,7 +241,7 @@ export function signIn({ email }) {
 }
 
 export function signOut() {
-  trackEvent('userAccount.logout', { userAccount: { logout: { value: 1 } } });
+  trackEvent('userAccount.logout', { userAccount: { logout: 1 } });
   localStorage.removeItem(SESSION_KEY);
   forgetIdentity();
   window.dispatchEvent(new CustomEvent('kapoor:account', { detail: null }));

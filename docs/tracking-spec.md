@@ -17,7 +17,7 @@
 | Streaming source | POC-Kapoor Profile Inlet (no auth, demo) | `https://dcs.adobedc.net/collection/dd630444a88a6bf96dadeb0fb5d5adcbc9a2adb5219b6e0c419ff1df61dbe314` — connected in `scripts/tracking-config.js`; browser posts verified (HTTP 200) |
 | Audiences (draft) | Signed-up, Purchasers, Cart Abandoners (7d), High-value | see Coworker inventory |
 
-Change from v1.3: the event schema uses Adobe's **User Login Process** field group instead of User Account Details; field names (`userAccount.createProfile/login/logout`) are unchanged.
+Change from v1.3: the event schema uses Adobe's **User Login Process** field group instead of User Account Details; field names (`userAccount.createProfile/login/logout`) are unchanged, but in this field group they are plain numbers (`1`), not `{ value: 1 }` measures.
 Test customers: `akkapoor@adobe.com`, `akkapoor+shopper1@adobe.com`, `akkapoor+shopper2@adobe.com` (journey only emails `@adobe.com` addresses).
 Profile records are sent only after the visitor accepts the cookie banner.
 **Cart-reminder journey (website side):** every add-to-cart from a signed-in shopper carries `identityMap.Email` (and `kapoorCustomerId`), plus `kapoor.productImageUrl` / `productUrl` as absolute URLs. Promo code **KAPOOR10** (10% off) can be entered at checkout, or applied from a link — use `/cart?promo=KAPOOR10` for the email's "Complete your purchase" button. With a code, `commerce.order.priceTotal` and the payment amount are the discounted total; `productListItems[].priceTotal` stays at list price. The code itself is not sent (no schema field for it yet).
@@ -53,7 +53,7 @@ Naming prefix for every object: **POC-Kapoor**. Currency: **USD**. Site: `https:
 Standard field groups:
 - **AEP Web SDK ExperienceEvent** (web page details, web interaction, environment, device)
 - **Commerce Details** (commerce.*, productListItems[])
-- **User Account Details** (userAccount.*)
+- **User Login Process** (userAccount.*; createProfile/login/logout are plain numbers)
 
 Custom field group **POC-Kapoor Site Context** (at `_acsultimatesupport.kapoor`):
 
@@ -94,9 +94,9 @@ Identity graph: ECID ↔ Email ↔ kapoorCustomerId stitched when the customer l
 | 6 | Cart view | `commerce.productListViews` | cart page or mini-cart opened | `commerce.productListViews.value=1`, `commerce.cart.cartID`, `productListItems[]` (full cart) |
 | 7 | Checkout start | `commerce.checkouts` | checkout page shown | `commerce.checkouts.value=1`, `commerce.cart.cartID`, `productListItems[]` |
 | 8 | Purchase | `commerce.purchases` | order placed (confirmation page) | `commerce.purchases.value=1`, `commerce.order.{purchaseID, priceTotal, currencyCode, payments[{paymentType, paymentAmount, currencyCode}]}`, `productListItems[]`; identities Email (+ customer ID if logged in) |
-| 9 | Account created | `userAccount.createProfile` | signup succeeds | `userAccount.createProfile.value=1`; identities Email + kapoorCustomerId |
-| 10 | Login | `userAccount.login` | sign-in succeeds | `userAccount.login.value=1`; identities Email + kapoorCustomerId |
-| 11 | Logout | `userAccount.logout` | sign-out | `userAccount.logout.value=1` |
+| 9 | Account created | `userAccount.createProfile` | signup succeeds | `userAccount.createProfile=1`; identities Email + kapoorCustomerId |
+| 10 | Login | `userAccount.login` | sign-in succeeds | `userAccount.login=1`; identities Email + kapoorCustomerId |
+| 11 | Logout | `userAccount.logout` | sign-out | `userAccount.logout=1` |
 
 Consent: at signup/checkout the customer ticks “Email me offers”. The site calls `setConsent` (Adobe 2.0 standard) → `consents.marketing.email.val = "y" | "n"` on the profile (needs the profile dataset in the datastream).
 
