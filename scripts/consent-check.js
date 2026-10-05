@@ -33,9 +33,10 @@ function loadConsented() {
  * Notifies listeners of the current consent state and loads consented
  * scripts if consent has been granted.
  */
-function onConsentUpdate() {
+function onConsentUpdate(changed = false) {
   const consented = consentChoice() === true;
-  window.dispatchEvent(new CustomEvent('consent.update', { detail: { consented } }));
+  // changed: the visitor has just made a choice in the banner (not a page load)
+  window.dispatchEvent(new CustomEvent('consent.update', { detail: { consented, changed } }));
   if (consented) {
     loadConsented();
   }
@@ -57,7 +58,7 @@ function showBanner() {
     if (!choice) return;
     localStorage.setItem(CONSENT_KEY, choice);
     banner.remove();
-    onConsentUpdate();
+    onConsentUpdate(true);
   });
   document.body.append(banner);
 }
