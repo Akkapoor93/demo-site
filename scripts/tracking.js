@@ -46,7 +46,12 @@ function describe(entry) {
   const order = x.commerce?.order ? ` · order ${x.commerce.order.purchaseID} $${x.commerce.order.priceTotal}` : '';
   const ids = x.identityMap ? ` · ids: ${Object.keys(x.identityMap).join('+')}` : '';
   if (entry.type === 'consent') return `consent · email offers ${entry.optIn ? 'yes' : 'no'}`;
-  if (entry.type === 'profile') return `profile → ${x.personalEmail?.address} (offers ${x.consents?.marketing?.email?.val})`;
+  if (entry.type === 'profile') {
+    const m = x.consents?.marketing || {};
+    const mobile = x.mobilePhone?.number ? ` · mobile ${x.mobilePhone.number}` : ' · no mobile';
+    const whatsApp = m.whatsApp ? `, WhatsApp ${m.whatsApp.val}` : '';
+    return `profile → ${x.personalEmail?.address}${mobile} (offers: email ${m.email?.val}${whatsApp})`;
+  }
   return `${entry.eventType}${items ? ` · ${items}` : ''}${order}${ids}`;
 }
 
@@ -61,7 +66,9 @@ function renderDebug() {
     document.body.append(panel);
   }
   const list = JSON.parse(sessionStorage.getItem(LOG_KEY) || '[]');
-  const sent = window.alloy ? 'sending to Adobe' : 'NOT sent: accept the cookie banner';
+  let sent = 'NOT sent: accept the cookie banner';
+  if (sender) sent = 'sending to Adobe';
+  else if (localStorage.getItem('kapoor-consent') === 'accept') sent = 'connecting to Adobe…';
   panel.innerHTML = `<strong style="color:#f3dfb3">Tracking events — ${sent}</strong><br>`;
   list.slice(-15).reverse().forEach((e) => {
     const row = document.createElement('div');
@@ -205,15 +212,19 @@ export function setMarketingConsent(optIn) {
  * into "POC-Kapoor Profile" (spec section 5). No-op until the inlet is configured.
  */
 export async function sendProfile({
-  email, firstName, lastName, customerId, optIn,
+  email, firstName, lastName, customerId, optIn, mobile, whatsApp,
 }) {
+  const marketing = { email: { val: optIn ? 'y' : 'n' } };
+  // WhatsApp choice only when known (sign-up, sign-in, account save), so checkout doesn't reset it
+  if (whatsApp !== undefined) marketing.whatsApp = { val: whatsApp ? 'y' : 'n' };
   const { url, datasetId, schemaId } = config.profileStreaming;
   const entity = {
     // unique record ID; the profile itself is keyed on the email identity
     _id: `${customerId || 'KJ-GUEST'}-${Date.now()}`,
     personalEmail: { address: email },
     person: { name: { firstName, lastName } },
-    consents: { marketing: { email: { val: optIn ? 'y' : 'n' } } },
+    ...(mobile ? { mobilePhone: { number: mobile } } : {}),
+    consents: { marketing },
     ...(customerId ? ext({ customerId }) : {}),
   };
   log({ type: 'profile', payload: entity });
@@ -242,6 +253,7 @@ export async function sendProfile({
 export function attachSender(webSdkSend) {
   sender = webSdkSend;
   queue.splice(0).forEach(({ item, resolve }) => send(item).then(resolve));
+  renderDebug();
 }
 
 // link and menu clicks in the header, footer and calls to action (event 2)

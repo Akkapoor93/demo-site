@@ -1,5 +1,6 @@
 import {
-  currentCustomer, signUp, signIn, signOut, ordersFor, formatPrice, sitePath,
+  currentCustomer, currentAccount, signUp, signIn, signOut, saveAccount, contactChoices,
+  ordersFor, formatPrice, sitePath,
 } from '../../scripts/shop.js';
 import { linkedToSomeoneElse, resetVisitorId } from '../../scripts/tracking.js';
 
@@ -9,7 +10,12 @@ const PENDING_KEY = 'kapoor-pending-account';
 const actions = {
   signIn: (data) => signIn({ email: data.email }),
   signUp: (data) => signUp({
-    email: data.email, firstName: data.firstName, lastName: data.lastName, optIn: data.optIn,
+    email: data.email,
+    firstName: data.firstName,
+    lastName: data.lastName,
+    optIn: data.optIn,
+    mobile: data.mobile,
+    whatsApp: data.whatsApp,
   }),
 };
 
@@ -48,10 +54,34 @@ function input(label, name, type = 'text', autocomplete = '') {
   return wrap;
 }
 
-function authForm(title, fields, submitLabel, onSubmit, extra) {
+/** Optional mobile number field (international format, checked in shop.js). */
+function mobileInput(value = '') {
+  const wrap = el('label', 'account-field');
+  wrap.append(el('span', '', 'Mobile number (optional)'));
+  const field = el('input');
+  field.type = 'tel';
+  field.name = 'mobile';
+  field.autocomplete = 'tel';
+  field.inputMode = 'tel';
+  field.placeholder = '+919876543210';
+  field.value = value;
+  wrap.append(field, el('small', 'account-hint', 'With country code, e.g. +919876543210'));
+  return wrap;
+}
+
+function checkbox(name, label, checked = false) {
+  const wrap = el('label', 'account-option');
+  const box = el('input');
+  box.type = 'checkbox';
+  box.name = name;
+  box.checked = checked;
+  wrap.append(box, ` ${label}`);
+  return wrap;
+}
+
+function authForm(title, fields, submitLabel, onSubmit, extras = []) {
   const form = el('form', 'account-form');
-  form.append(el('h2', '', title), ...fields);
-  if (extra) form.append(extra);
+  form.append(el('h2', '', title), ...fields, ...extras);
   const submit = el('button', 'button primary', submitLabel);
   submit.type = 'submit';
   const error = el('p', 'account-error');
@@ -76,19 +106,20 @@ function signedOut(block, render) {
     if (runAccountAction('signIn', data)) render();
   });
 
-  const optInLabel = el('label', 'account-option');
-  const optIn = el('input');
-  optIn.type = 'checkbox';
-  optIn.name = 'optIn';
-  optInLabel.append(optIn, ' Email me offers and new collections');
   const signUpForm = authForm('Create an account', [
     input('First name', 'firstName', 'text', 'given-name'),
     input('Last name', 'lastName', 'text', 'family-name'),
     input('Email', 'email', 'email', 'email'),
+    mobileInput(),
     input('Password', 'password', 'password', 'new-password'),
   ], 'Create account', (data) => {
-    if (runAccountAction('signUp', { ...data, optIn: optIn.checked })) render();
-  }, optInLabel);
+    const choices = { optIn: data.optIn === 'on', whatsApp: data.whatsApp === 'on' };
+    contactChoices({ mobile: data.mobile, whatsApp: choices.whatsApp }); // check before any reload
+    if (runAccountAction('signUp', { ...data, ...choices })) render();
+  }, [
+    checkbox('optIn', 'Email me offers and new collections'),
+    checkbox('whatsApp', 'Send me offers on WhatsApp'),
+  ]);
 
   const note = el('p', 'account-note', 'POC demo accounts are stored in this browser only; passwords are not checked.');
   block.replaceChildren(signInForm, signUpForm, note);
@@ -111,6 +142,20 @@ function signedIn(block, customer) {
     window.location.reload();
   });
   profile.append(out);
+
+  // contact preferences: mobile number and WhatsApp offers, saved to the profile
+  const account = currentAccount() || {};
+  const prefs = authForm('Contact preferences', [mobileInput(account.mobile)], 'Save', (data, form) => {
+    saveAccount({ mobile: data.mobile, whatsApp: data.whatsApp === 'on' });
+    form.querySelector('input[name="mobile"]').value = currentAccount()?.mobile || '';
+    form.querySelector('.account-error').textContent = '';
+    form.querySelector('.account-saved').textContent = 'Saved.';
+  }, [checkbox('whatsApp', 'Send me offers on WhatsApp', !!account.whatsApp)]);
+  prefs.classList.add('account-preferences');
+  const saved = el('p', 'account-saved');
+  saved.setAttribute('role', 'status');
+  prefs.append(saved);
+  prefs.addEventListener('input', () => { saved.textContent = ''; });
 
   const history = el('div', 'account-orders');
   history.append(el('h2', '', 'My orders'));
@@ -135,7 +180,7 @@ function signedIn(block, customer) {
     });
     history.append(list);
   }
-  block.replaceChildren(profile, history);
+  block.replaceChildren(profile, history, prefs);
 }
 
 /**

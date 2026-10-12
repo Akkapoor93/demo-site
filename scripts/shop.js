@@ -196,6 +196,44 @@ export function trackCheckout(lines) {
 
 export const currentCustomer = () => read(SESSION_KEY, null);
 
+/** Stored test account of the signed-in shopper (includes mobile and offer choices). */
+export function currentAccount() {
+  const customer = currentCustomer();
+  return customer ? read(ACCOUNTS_KEY, {})[customer.email] || null : null;
+}
+
+/**
+ * Mobile number in international format (+ country code, digits only), e.g. +919876543210.
+ * Spaces, dashes, dots and brackets are removed and a leading 00 becomes +.
+ * @returns {string} the number, or '' when left empty
+ */
+export function normalizeMobile(value) {
+  const number = String(value || '').replace(/[\s\-().]/g, '').replace(/^00/, '+');
+  if (!number) return '';
+  if (!/^\+[1-9]\d{6,14}$/.test(number)) {
+    throw new Error('Enter your mobile number with the country code, e.g. +919876543210.');
+  }
+  return number;
+}
+
+/** Checks the mobile number and WhatsApp choice; throws a message for the shopper if invalid. */
+export function contactChoices({ mobile, whatsApp }) {
+  const number = normalizeMobile(mobile);
+  if (whatsApp && !number) throw new Error('Add your mobile number to get offers on WhatsApp.');
+  return { mobile: number, whatsApp: !!whatsApp };
+}
+
+// what the profile connection receives for an account (name, email, mobile, offer choices)
+const profileOf = (account) => ({
+  email: account.email,
+  firstName: account.firstName,
+  lastName: account.lastName,
+  customerId: account.customerId,
+  optIn: !!account.optIn,
+  mobile: account.mobile || '',
+  whatsApp: !!account.whatsApp,
+});
+
 function startSession(account) {
   const {
     email, firstName, lastName, customerId,
@@ -211,19 +249,24 @@ function startSession(account) {
 
 /** Creates a test account (no real authentication — POC only). */
 export function signUp({
-  email, firstName, lastName, optIn,
+  email, firstName, lastName, optIn, mobile, whatsApp,
 }) {
   const accounts = read(ACCOUNTS_KEY, {});
   const key = email.trim().toLowerCase();
   if (accounts[key]) throw new Error('An account with this email already exists. Please sign in.');
   const account = {
-    email: key, firstName, lastName, customerId: randomId('KJ'), optIn: !!optIn,
+    email: key,
+    firstName,
+    lastName,
+    customerId: randomId('KJ'),
+    optIn: !!optIn,
+    ...contactChoices({ mobile, whatsApp }),
   };
   accounts[key] = account;
   write(ACCOUNTS_KEY, accounts);
   const customer = startSession(account);
   trackEvent('userAccount.createProfile', { userAccount: { createProfile: 1 } });
-  sendProfile({ ...customer, optIn: account.optIn });
+  sendProfile(profileOf(account));
   setMarketingConsent(account.optIn);
   return customer;
 }
@@ -234,10 +277,22 @@ export function signIn({ email }) {
   const customer = startSession(account);
   trackEvent('userAccount.login', { userAccount: { login: 1 } });
   // re-send the profile so accounts created before consent (or before the profile
-  // connection existed) still get a profile with their email-offers choice
-  sendProfile({ ...customer, optIn: account.optIn });
+  // connection existed) still get a profile with their offer choices
+  sendProfile(profileOf(account));
   setMarketingConsent(!!account.optIn);
   return customer;
+}
+
+/** Saves the signed-in shopper's mobile number and WhatsApp choice, and sends the profile. */
+export function saveAccount({ mobile, whatsApp }) {
+  const account = currentAccount();
+  if (!account) throw new Error('Please sign in first.');
+  Object.assign(account, contactChoices({ mobile, whatsApp }));
+  const accounts = read(ACCOUNTS_KEY, {});
+  accounts[account.email] = account;
+  write(ACCOUNTS_KEY, accounts);
+  sendProfile(profileOf(account));
+  return account;
 }
 
 // cookies accepted while already signed in: send the profile and offers choice now,
@@ -245,8 +300,8 @@ export function signIn({ email }) {
 window.addEventListener('consent.update', ({ detail }) => {
   const customer = currentCustomer();
   if (!detail?.consented || !detail.changed || !customer) return;
-  const account = read(ACCOUNTS_KEY, {})[customer.email] || {};
-  sendProfile({ ...customer, optIn: !!account.optIn });
+  const account = read(ACCOUNTS_KEY, {})[customer.email] || customer;
+  sendProfile(profileOf(account));
   setMarketingConsent(!!account.optIn);
 });
 

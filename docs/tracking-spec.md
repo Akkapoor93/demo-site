@@ -107,6 +107,13 @@ Web events carry identities, not profile attributes. For the POC:
 2. **Signup from the website** — at account creation (and at checkout when the shopper ticks "Email me offers"), the site posts one profile record to an **HTTP API streaming source** (POC only, unauthenticated inlet) into `POC-Kapoor Profile`:
    `personalEmail.address`, `person.name.firstName` / `lastName`, `_acsultimatesupport.kapoor.customerId`, `consents.marketing.email.val`.
    Coworker creates the source + dataflow and sends the inlet URL; the site wraps records in the standard streaming envelope (`header.schemaRef`, `imsOrgId`, `datasetId`, `body.xdmEntity`).
+3. **Sign-in and account save** — the same record is re-sent on sign-in, when the shopper saves "Contact preferences" on the account page, and when cookies are accepted while signed in.
+4. **WhatsApp opt-in** — sign-up and the account page have an optional **Mobile number** (stored in international format, `+` country code and digits only, e.g. `+919876543210`; spaces, dashes, brackets removed, leading `00` → `+`) and **"Send me offers on WhatsApp"** (unticked by default; requires a mobile number). On sign-up, sign-in and account save the record adds:
+   ```json
+   "mobilePhone": { "number": "+919876543210" },
+   "consents": { "marketing": { "email": { "val": "y" }, "whatsApp": { "val": "y" } } }
+   ```
+   `whatsApp.val` is `"n"` when the box is unticked; `mobilePhone` is left out when no number is given. The checkout opt-in record sends email consent only (it never changes the WhatsApp choice). Add-to-cart and other web events are unchanged.
 
 ## 6. Journeys and audiences this spec supports
 

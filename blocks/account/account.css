@@ -40,6 +40,21 @@
   font-size: 14px;
 }
 
+.account .account-hint {
+  font-size: 12px;
+  color: var(--subtitle-color);
+}
+
+.account .account-saved {
+  margin: 0;
+  color: #1b6e3a;
+  font-size: 14px;
+}
+
+.account .account-saved:empty {
+  display: none;
+}
+
 .account .account-error {
   margin: 0;
   color: #b00020;
